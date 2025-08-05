@@ -1,14 +1,15 @@
 package com.example.demo1.controller;
 
-import com.example.demo1.dto.ApiResponse;
+import com.example.demo1.assembler.UserAssembler;
 import com.example.demo1.dto.UserRequestDto;
 import com.example.demo1.dto.UserResponseDto;
 import com.example.demo1.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.example.demo1.constants.CommonConstants.DELETED;
@@ -16,45 +17,44 @@ import static com.example.demo1.constants.CommonConstants.DELETED;
 @RestController
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    @Autowired private UserService userService;
+    @Autowired private UserAssembler userAssembler;
 
-    @GetMapping
-    public Page<UserResponseDto> getUsers(
+
+    @GetMapping("/users")
+    public ResponseEntity<PagedModel<EntityModel<UserResponseDto>>> getUsers(
             @RequestParam(required = false) String filter,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String sortDir
+            @RequestParam(defaultValue = "userId") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            PagedResourcesAssembler<UserResponseDto> pagedAssembler
     ) {
-        Sort sort = sortDir.equalsIgnoreCase("asc")
-                ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-        return userService.getUsers(filter, pageable);
+        Page<UserResponseDto> users = userService.getUsers(filter, page, size, sortBy, sortDir);
+        PagedModel<EntityModel<UserResponseDto>> model = pagedAssembler.toModel(users, userAssembler);
+        return ResponseEntity.ok(model);
     }
 
+
     @GetMapping("/{id}")
-    public ApiResponse<UserResponseDto> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public EntityModel<UserResponseDto> getUserById(@PathVariable Long id) {
+        return userAssembler.toModel(userService.getUserById(id));
     }
 
     @PostMapping("/add")
-    public ApiResponse<UserResponseDto> addUser(@RequestBody UserRequestDto userRequestDto) {
-        return userService.addUser(userRequestDto);
+    public EntityModel<UserResponseDto> addUser(@RequestBody UserRequestDto dto) {
+        return userAssembler.toModel(userService.addUser(dto));
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UserRequestDto userRequestDto) {
-        return userService.updateUser(id,userRequestDto);
+    public EntityModel<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UserRequestDto dto) {
+        return userAssembler.toModel(userService.updateUser(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
-       userService.deleteUser(id);
-       return DELETED;
-
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok(DELETED);
     }
-
 }
+

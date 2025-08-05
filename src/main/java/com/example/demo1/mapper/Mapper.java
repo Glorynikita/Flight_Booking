@@ -7,7 +7,9 @@ import com.example.demo1.dto.UserResponseDto;
 import com.example.demo1.model.Flight;
 import com.example.demo1.model.Ticket;
 import com.example.demo1.model.User_Profile;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Mapper {
     public static User_Profile toUserEntity(UserRequestDto userRequestDto){
         User_Profile userProfile = new User_Profile();
