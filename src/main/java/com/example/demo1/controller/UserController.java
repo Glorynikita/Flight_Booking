@@ -1,8 +1,8 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.assembler.UserAssembler;
-import com.example.demo1.dto.UserRequestDto;
-import com.example.demo1.dto.UserResponseDto;
+import com.example.demo1.dto.requestDto.UserRequestDto;
+import com.example.demo1.dto.responseDto.UserResponseDto;
 import com.example.demo1.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,10 +15,22 @@ import org.springframework.web.bind.annotation.*;
 import static com.example.demo1.constants.CommonConstants.DELETED;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired private UserService userService;
     @Autowired private UserAssembler userAssembler;
+
+    /**
+     * lit all the users
+     * @param filter
+     * @param page
+     * @param size
+     * @param sortBy
+     * @param sortDir
+     * @param pagedAssembler
+     * @return
+     */
 
 
     @GetMapping("/users")
@@ -28,7 +40,7 @@ public class UserController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "userId") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir,
-            PagedResourcesAssembler<UserResponseDto> pagedAssembler
+            PagedResourcesAssembler<UserResponseDto> pagedAssembler // Must removed
     ) {
         Page<UserResponseDto> users = userService.getUsers(filter, page, size, sortBy, sortDir);
         PagedModel<EntityModel<UserResponseDto>> model = pagedAssembler.toModel(users, userAssembler);

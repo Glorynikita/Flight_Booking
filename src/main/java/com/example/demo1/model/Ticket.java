@@ -20,10 +20,11 @@ public class Ticket {
     private String destination;
     private String fare;
     private String status;
+    private
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User_Profile userProfile;
+    private UserProfile userProfile;
 
     @ManyToOne
     @JoinColumn(name = "flight_id")

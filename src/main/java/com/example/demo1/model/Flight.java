@@ -14,7 +14,7 @@ public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long flightNumber;
+    private String flightNumber;
     private String flightName;
 
     @ManyToOne

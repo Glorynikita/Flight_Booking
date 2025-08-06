@@ -1,12 +1,14 @@
-package com.example.demo1.dto;
+package com.example.demo1.dto.responseDto;
 
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
-public class FlightResponseDto {
+public class TicketResponseDto {
     private Long id;
+    private String name;
+    private String gender;
     private Long flightNumber;
     private String flightName;
     private String source;
@@ -14,4 +16,8 @@ public class FlightResponseDto {
     private String departureTime;
     private String arrivalTime;
     private LocalDate travelDate;
+    private Long seat;
+    private String travelClass;
+    private String fare;
+
 }

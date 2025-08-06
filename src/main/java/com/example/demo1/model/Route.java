@@ -23,4 +23,5 @@ public class Route {
     private String departureTime;
     private String arrivalTime;
     private LocalDate travelDate;
+
 }

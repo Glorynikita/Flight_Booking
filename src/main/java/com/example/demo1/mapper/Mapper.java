@@ -1,18 +1,30 @@
 package com.example.demo1.mapper;
 
-import com.example.demo1.dto.FlightResponseDto;
-import com.example.demo1.dto.TicketResponseDto;
-import com.example.demo1.dto.UserRequestDto;
-import com.example.demo1.dto.UserResponseDto;
 import com.example.demo1.model.Flight;
 import com.example.demo1.model.Ticket;
-import com.example.demo1.model.User_Profile;
+import com.example.demo1.model.UserProfile;
+import com.example.demo1.repository.FlightRepo;
+import com.example.demo1.repository.UserRepo;
+import com.example.demo1.dto.requestDto.TicketRequestDto;
+import com.example.demo1.dto.requestDto.UserRequestDto;
+import com.example.demo1.dto.responseDto.TicketResponseDto;
+import com.example.demo1.dto.responseDto.UserResponseDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Random;
 
 @Component
 public class Mapper {
-    public static User_Profile toUserEntity(UserRequestDto userRequestDto){
-        User_Profile userProfile = new User_Profile();
+
+//    @Autowired
+//    private FlightRepo flightRepo;
+//
+//    @Autowired
+//    private UserRepo userRepo;
+
+    public  UserProfile toUserEntity(UserRequestDto userRequestDto) {
+        UserProfile userProfile = new UserProfile();
         userProfile.setName(userRequestDto.getName());
         userProfile.setGender(userRequestDto.getGender());
         userProfile.setPhone(userRequestDto.getPhone());
@@ -21,7 +33,7 @@ public class Mapper {
         return userProfile;
     }
 
-    public static UserResponseDto toUserDto(User_Profile userProfile){
+    public static UserResponseDto toUserDto(UserProfile userProfile) {
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setUserId(userProfile.getUserId());
         userResponseDto.setName(userProfile.getName());
@@ -31,33 +43,39 @@ public class Mapper {
         return userResponseDto;
     }
 
-    public static TicketResponseDto toTicketDto(Ticket ticket){
-        TicketResponseDto ticketResponseDto = new TicketResponseDto();
-        ticketResponseDto.setId(ticket.getId());
-        ticketResponseDto.setName(ticket.getUserProfile().getName());
-        ticketResponseDto.setGender(ticket.getUserProfile().getGender());
-        ticketResponseDto.setFlightNumber(ticket.getFlight().getFlightNumber());
-        ticketResponseDto.setFlightName(ticket.getFlight().getFlightName());
-        ticketResponseDto.setSource(ticket.getFlight().getRoute().getSource());
-        ticketResponseDto.setDestination(ticket.getFlight().getRoute().getDestination());
-        ticketResponseDto.setArrivalTime(ticket.getFlight().getRoute().getArrivalTime());
-        ticketResponseDto.setDepartureTime(ticket.getFlight().getRoute().getDepartureTime());
-        ticketResponseDto.setTravelDate(ticket.getFlight().getRoute().getTravelDate());
-        ticketResponseDto.setSeat(ticket.getSeat());
-        ticketResponseDto.setTravelClass(ticket.getTravelClass());
-        return ticketResponseDto;
-    }
+        public static Ticket toTicketEntity(TicketRequestDto dto, Flight flight, UserProfile user) {
+            Ticket ticket = new Ticket();
+            ticket.setPassangerName(user.getName());
+            ticket.setTravelClass(dto.getTravelClass());
+            ticket.setSeat(new Random().nextLong(1, 150));
+            ticket.setSource(flight.getRoute().getSource());
+            ticket.setDestination(flight.getRoute().getDestination());
+            ticket.setStatus("CONFIRMED");
+            ticket.setFlight(flight);
+            ticket.setUserProfile(user);
+            return ticket;
+        }
 
-    public static FlightResponseDto toFlightDto(Flight flight){
-        FlightResponseDto flightResponseDto = new FlightResponseDto();
-        flightResponseDto.setId(flight.getId());
-        flightResponseDto.setFlightNumber(flight.getFlightNumber());
-        flightResponseDto.setFlightName(flight.getFlightName());
-        flightResponseDto.setSource(flight.getRoute().getSource());
-        flightResponseDto.setDestination(flight.getRoute().getDestination());
-        flightResponseDto.setArrivalTime(flight.getRoute().getArrivalTime());
-        flightResponseDto.setDepartureTime(flight.getRoute().getDepartureTime());
-        flightResponseDto.setTravelDate(flight.getRoute().getTravelDate());
-        return flightResponseDto;
-    }
+        public static TicketResponseDto toTicketDto(Ticket ticket) {
+            TicketResponseDto dto = new TicketResponseDto();
+            dto.setId(ticket.getId());
+            dto.setName(ticket.getUserProfile().getName());
+            dto.setGender(ticket.getUserProfile().getGender());
+            dto.setFlightNumber(ticket.getFlight().getId());
+            dto.setFlightName(ticket.getFlight().getFlightName());
+            dto.setSource(ticket.getSource());
+            dto.setDestination(ticket.getDestination());
+            dto.setDepartureTime(ticket.getFlight().getRoute().getDepartureTime());
+            dto.setArrivalTime(ticket.getFlight().getRoute().getArrivalTime());
+            dto.setTravelDate(ticket.getFlight().getRoute().getTravelDate());
+            dto.setSeat(ticket.getSeat());
+            dto.setTravelClass(ticket.getTravelClass());
+            dto.setFare(ticket.getFare());
+            return dto;
+        }
+
+//    private Long generateRandomSeat() {
+//        return (long) ((Math.random() * 100) + 1);
+//    }
 }
+

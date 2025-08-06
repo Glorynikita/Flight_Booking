@@ -1,7 +1,7 @@
 package com.example.demo1.assembler;
 
 import com.example.demo1.controller.UserController;
-import com.example.demo1.dto.UserResponseDto;
+import com.example.demo1.dto.responseDto.UserResponseDto;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
@@ -20,6 +20,7 @@ public class UserAssembler implements RepresentationModelAssembler<UserResponseD
                 linkTo(UserController.class).slash(dto.getUserId()).withRel("delete-user").withType("DELETE")
         );
     }
+
 }
 
 
@@ -67,7 +68,7 @@ public class UserAssembler implements RepresentationModelAssembler<UserResponseD
 //
 //import com.example.demo1.controller.UserController;
 //import com.example.demo1.dto.UserRequestDto;
-//import com.example.demo1.dto.UserResponseDto;
+//import com.example.demo1.dto.responseDto.UserResponseDto;
 //import com.example.demo1.model.User_Profile;
 //import org.springframework.hateoas.EntityModel;
 //import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -92,7 +93,7 @@ public class UserAssembler implements RepresentationModelAssembler<UserResponseD
 //package com.example.demo1.assembler;
 //
 //import com.example.demo1.controller.UserController;
-//import com.example.demo1.dto.UserResponseDto;
+//import com.example.demo1.dto.responseDto.UserResponseDto;
 //import org.springframework.hateoas.EntityModel;
 //import org.springframework.hateoas.server.RepresentationModelAssembler;
 //import org.springframework.stereotype.Component;

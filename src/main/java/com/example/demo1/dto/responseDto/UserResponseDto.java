@@ -1,7 +1,6 @@
-package com.example.demo1.dto;
+package com.example.demo1.dto.responseDto;
 
 import lombok.Data;
-import org.springframework.hateoas.RepresentationModel;
 
 @Data
 public class UserResponseDto {
