@@ -11,4 +11,7 @@ import java.util.Optional;
 public interface UserRepo extends JpaRepository<UserProfile, Long> , JpaSpecificationExecutor<UserProfile> {
     // to validate duplicate entries for user
     Optional<UserProfile> findByEmailAndPhone(String email, String phone);
+
+    // to validate user login
+    Optional<UserProfile> findByEmailAndPassword(String email, String password);
 }

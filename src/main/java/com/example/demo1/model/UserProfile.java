@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.Collection;
 
 @Data
 @NoArgsConstructor
@@ -24,4 +25,25 @@ public class UserProfile {
     @Column(nullable = false)
     private String email;
     private String password;
+    @OneToMany(mappedBy = "userProfile")
+    private Collection<Ticket> ticket;
+
+
+
+
+
+
+
+
+
+
+
+
+//    public Collection<Ticket> getTicket() {
+//        return ticket;
+//    }
+//
+//    public void setTicket(Collection<Ticket> ticket) {
+//        this.ticket = ticket;
+//    }
 }

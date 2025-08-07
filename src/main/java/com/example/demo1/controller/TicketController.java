@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.example.demo1.constants.CommonConstants.DELETED;
+
 @RestController
 @RequestMapping("/tickets")
 public class TicketController {
@@ -19,12 +21,22 @@ public class TicketController {
     @Autowired
     private TicketAssembler ticketAssembler;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<EntityModel<TicketResponseDto>> getTicket(@PathVariable Long id) {
+        TicketResponseDto ticketResponseDto = ticketService.getTicketById(id);
+        return ResponseEntity.ok(ticketAssembler.toModel(ticketResponseDto));
+    }
+
     @PostMapping("/add")
-    public ResponseEntity<EntityModel<TicketResponseDto>> bookTicket(@RequestBody TicketRequestDto dto) {
-        TicketResponseDto saved = ticketService.bookTicket(dto);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(ticketAssembler.toModel(saved));
+    public ResponseEntity<TicketResponseDto> bookTicket(@RequestBody TicketRequestDto dto) {
+        TicketResponseDto response = ticketService.bookTicket(dto);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteTicket(@PathVariable Long id) {
+        ticketService.deleteTicket(id);
+        return DELETED;
     }
 
 

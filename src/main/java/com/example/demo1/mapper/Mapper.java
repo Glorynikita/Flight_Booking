@@ -1,14 +1,13 @@
 package com.example.demo1.mapper;
 
-import com.example.demo1.model.Flight;
-import com.example.demo1.model.Ticket;
-import com.example.demo1.model.UserProfile;
-import com.example.demo1.repository.FlightRepo;
-import com.example.demo1.repository.UserRepo;
 import com.example.demo1.dto.requestDto.TicketRequestDto;
 import com.example.demo1.dto.requestDto.UserRequestDto;
 import com.example.demo1.dto.responseDto.TicketResponseDto;
 import com.example.demo1.dto.responseDto.UserResponseDto;
+import com.example.demo1.model.Flight;
+import com.example.demo1.model.Ticket;
+import com.example.demo1.model.UserProfile;
+import com.example.demo1.repository.FlightRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +16,8 @@ import java.util.Random;
 @Component
 public class Mapper {
 
-//    @Autowired
-//    private FlightRepo flightRepo;
-//
-//    @Autowired
-//    private UserRepo userRepo;
+    @Autowired
+    private FlightRepo flightRepo;
 
     public  UserProfile toUserEntity(UserRequestDto userRequestDto) {
         UserProfile userProfile = new UserProfile();

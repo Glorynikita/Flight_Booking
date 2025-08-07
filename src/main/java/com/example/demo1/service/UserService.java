@@ -3,6 +3,7 @@ package com.example.demo1.service;
 import com.example.demo1.dto.requestDto.UserRequestDto;
 import com.example.demo1.dto.responseDto.UserResponseDto;
 import com.example.demo1.exception.DuplicateUserException;
+import com.example.demo1.exception.UserNotFoundException;
 import com.example.demo1.mapper.Mapper;
 import com.example.demo1.model.UserProfile;
 import com.example.demo1.repository.UserRepo;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.example.demo1.constants.CommonConstants.NOTFOUND;
+import static com.example.demo1.constants.CommonConstants.*;
 
 @Service
 public class UserService {
@@ -22,7 +23,8 @@ public class UserService {
     @Autowired private Mapper mapper;
 
     public Page<UserResponseDto> getUsers(String filter, int page, int size, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Sort sort = sortDir.equalsIgnoreCase(ASC) ?
+                Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Specification<UserProfile> spec = (root, query, cb) -> {
@@ -58,7 +60,7 @@ public class UserService {
     public UserResponseDto addUser(UserRequestDto dto) {
         Optional<UserProfile> existing = userRepo.findByEmailAndPhone(dto.getEmail(), dto.getPhone());
         if (existing.isPresent()) {
-            throw new DuplicateUserException("User already exists.");
+            throw new DuplicateUserException(FOUND);
         }
         return mapper.toUserDto(userRepo.save(mapper.toUserEntity(dto)));
     }
@@ -74,8 +76,10 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
+        if(!userRepo.existsById(id)) {
+            throw new UserNotFoundException(NOTFOUND);
+        }
         userRepo.deleteById(id);
-        // Exception handled
     }
 
 }

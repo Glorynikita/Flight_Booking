@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+import static com.example.demo1.constants.CommonConstants.ASC;
 import static com.example.demo1.constants.CommonConstants.NOTFOUND;
 
 @Service
@@ -25,7 +26,7 @@ public class RouteService {
     private RouteSpecification routeSpecification;
 
     public Page<Route> getAllRoutes(String source, String destination, String departureTime, String arrivalTime, LocalDate travelDate, int pageNo, int size, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase("asc") ?
+        Sort sort = sortDir.equalsIgnoreCase(ASC) ?
                 Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, size, sort);
 

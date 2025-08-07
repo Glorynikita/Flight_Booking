@@ -20,7 +20,6 @@ public class Ticket {
     private String destination;
     private String fare;
     private String status;
-    private
 
     @ManyToOne
     @JoinColumn(name = "user_id")

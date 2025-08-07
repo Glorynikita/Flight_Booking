@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import static com.example.demo1.constants.CommonConstants.ASC;
 import static com.example.demo1.constants.CommonConstants.NOTFOUND;
 
 @Service
@@ -23,7 +24,7 @@ public class FlightService {
     private FlightSpecification flightSpecification;
 
     public Page<Flight> getAllflights(String flightNumber, String flightName, Long routeId, int pageNo, int size, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase("asc") ?
+        Sort sort = sortDir.equalsIgnoreCase(ASC) ?
                 Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, size, sort);
 

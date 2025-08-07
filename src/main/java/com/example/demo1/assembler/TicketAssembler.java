@@ -1,6 +1,8 @@
 package com.example.demo1.assembler;
 
+import com.example.demo1.controller.FlightController;
 import com.example.demo1.controller.TicketController;
+import com.example.demo1.dto.requestDto.TicketRequestDto;
 import com.example.demo1.dto.responseDto.TicketResponseDto;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -15,7 +17,9 @@ public class TicketAssembler implements RepresentationModelAssembler<TicketRespo
     public EntityModel<TicketResponseDto> toModel(TicketResponseDto ticket) {
         return EntityModel.of(ticket,
 //                linkTo(methodOn(TicketController.class).getTicketById(ticket.getId())).withSelfRel(),
-                linkTo(methodOn(TicketController.class).bookTicket(null)).withRel("book-ticket"));
-//                linkTo(methodOn(FlightController.class).getAllTickets(null, null, null, 0,10,"id","asc")).withRel("all-tickets"));
+//                linkTo(methodOn(TicketController.class).bookTicket(null)).withRel("book-ticket"),
+                linkTo(methodOn(TicketController.class).bookTicket(null)).withRel("book-ticket"),
+                linkTo(methodOn(TicketController.class).getTicket(ticket.getId())).withSelfRel());
+
     }
 }
