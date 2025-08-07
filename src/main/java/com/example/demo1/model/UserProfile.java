@@ -25,6 +25,7 @@ public class UserProfile {
     @Column(nullable = false)
     private String email;
     private String password;
+
     @OneToMany(mappedBy = "userProfile")
     private Collection<Ticket> ticket;
 

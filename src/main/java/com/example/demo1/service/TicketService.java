@@ -43,7 +43,7 @@ public class TicketService {
 
         UserRequestDto userRequestDto = dto.getUser();
 
-        UserProfile val = userRepo.findByEmailAndPassword(userRequestDto.getEmail(), userRequestDto.getPassword())
+        userRepo.findByEmailAndPassword(userRequestDto.getEmail(), userRequestDto.getPassword())
                 .orElseThrow(()->new RuntimeException(INVALID));
 
         Optional<UserProfile> userOpt = userRepo.findByEmailAndPhone(
