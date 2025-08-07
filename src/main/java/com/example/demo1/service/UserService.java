@@ -36,7 +36,7 @@ public class UserService {
                         cb.like(cb.lower(root.get("gender")), like)
                 );
             }
-            return null; // Need to check
+            return cb.conjunction();
         };
 
         return userRepo.findAll(spec, pageable).map(Mapper::toUserDto);
