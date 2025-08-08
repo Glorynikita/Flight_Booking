@@ -3,17 +3,12 @@ package com.example.demo1.controller;
 import com.example.demo1.assembler.FlightAssembler;
 import com.example.demo1.model.Flight;
 import com.example.demo1.service.FlightService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.stream.Collectors;
-
 import static com.example.demo1.constants.CommonConstants.DELETED;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/flights")
@@ -38,14 +33,7 @@ public class FlightController {
             @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Page<Flight> pages = flightService.getAllflights(flightNumber, flightName, routeId, pageNo, size, sortBy, sortDir);
-
-        var entities = pages.getContent().stream()
-                .map(flightAssembler::toModel)
-                .collect(Collectors.toList());
-
-        return PagedModel.of(entities,
-        new PagedModel.PageMetadata(pages.getSize(), pages.getNumber(), pages.getTotalElements(), pages.getTotalPages()),
-                linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId, pageNo, size, sortBy, sortDir)).withSelfRel());
+        return flightAssembler.toPagedModel(pages, flightNumber, flightName, routeId, pageNo, size, sortBy, sortDir);
     }
 
     @GetMapping("{id}")

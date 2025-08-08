@@ -3,7 +3,6 @@ package com.example.demo1.service;
 import com.example.demo1.Specification.FlightSpecification;
 import com.example.demo1.model.Flight;
 import com.example.demo1.repository.FlightRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
