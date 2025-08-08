@@ -19,8 +19,13 @@ import static com.example.demo1.constants.CommonConstants.*;
 @Service
 public class UserService {
 
-    @Autowired private UserRepo userRepo;
-    @Autowired private Mapper mapper;
+    private final UserRepo userRepo;
+    private final Mapper mapper;
+
+    public UserService(UserRepo userRepo, Mapper mapper) {
+        this.userRepo = userRepo;
+        this.mapper = mapper;
+    }
 
     public Page<UserResponseDto> getUsers(String filter, int page, int size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(ASC) ?

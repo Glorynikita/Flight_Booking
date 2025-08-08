@@ -21,14 +21,15 @@ import static com.example.demo1.constants.CommonConstants.NOTFOUND;
 @Service
 public class TicketService {
 
-    @Autowired
-    private TicketRepo ticketRepo;
+    private final TicketRepo ticketRepo;
+    private final UserRepo userRepo;
+    private final FlightRepo flightRepo;
 
-    @Autowired
-    private UserRepo userRepo;
-
-    @Autowired
-    private FlightRepo flightRepo;
+    public TicketService(TicketRepo ticketRepo, UserRepo userRepo, FlightRepo flightRepo) {
+        this.ticketRepo = ticketRepo;
+        this.userRepo = userRepo;
+        this.flightRepo = flightRepo;
+    }
 
     public TicketResponseDto getTicketById(Long id) {
         Ticket ticket = ticketRepo.findById(id)

@@ -19,11 +19,21 @@ import static com.example.demo1.constants.CommonConstants.NOTFOUND;
 @Service
 public class RouteService {
 
-    @Autowired
-    private RouteRepo routeRepo;
+//    field injection
+//    @Autowired
+//    private RouteRepo routeRepo;
+//
+//    @Autowired
+//    private RouteSpecification routeSpecification;
 
-    @Autowired
-    private RouteSpecification routeSpecification;
+    //constructor injection
+    private final RouteRepo routeRepo;
+    private final RouteSpecification routeSpecification;
+
+    public  RouteService(RouteRepo routeRepo, RouteSpecification routeSpecification) {
+        this.routeRepo = routeRepo;
+        this.routeSpecification = routeSpecification;
+    }
 
     public Page<Route> getAllRoutes(String source, String destination, String departureTime, String arrivalTime, LocalDate travelDate, int pageNo, int size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(ASC) ?

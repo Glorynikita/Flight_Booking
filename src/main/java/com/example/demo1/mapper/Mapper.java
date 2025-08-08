@@ -8,7 +8,6 @@ import com.example.demo1.model.Flight;
 import com.example.demo1.model.Ticket;
 import com.example.demo1.model.UserProfile;
 import com.example.demo1.repository.FlightRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -16,8 +15,11 @@ import java.util.Random;
 @Component
 public class Mapper {
 
-    @Autowired
-    private FlightRepo flightRepo;
+    private final FlightRepo flightRepo;
+
+    public  Mapper(FlightRepo flightRepo) {
+        this.flightRepo = flightRepo;
+    }
 
     public  UserProfile toUserEntity(UserRequestDto userRequestDto) {
         UserProfile userProfile = new UserProfile();

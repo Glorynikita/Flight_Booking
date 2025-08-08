@@ -19,11 +19,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/flights")
 public class FlightController {
 
-    @Autowired
-    private FlightService flightService;
+    private final FlightService flightService;
+    private final FlightAssembler flightAssembler;
 
-    @Autowired
-    private FlightAssembler flightAssembler;
+    public  FlightController(FlightService flightService, FlightAssembler flightAssembler) {
+        this.flightService = flightService;
+        this.flightAssembler = flightAssembler;
+    }
 
     @GetMapping("/all")
     public PagedModel<EntityModel<Flight>> getAllFlights(

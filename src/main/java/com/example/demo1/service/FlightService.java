@@ -17,11 +17,13 @@ import static com.example.demo1.constants.CommonConstants.NOTFOUND;
 @Service
 public class FlightService {
 
-    @Autowired
-    private FlightRepo flightRepo;
+    private final FlightRepo flightRepo;
+    private final FlightSpecification flightSpecification;
 
-    @Autowired
-    private FlightSpecification flightSpecification;
+    public  FlightService(FlightRepo flightRepo, FlightSpecification flightSpecification) {
+        this.flightRepo = flightRepo;
+        this.flightSpecification = flightSpecification;
+    }
 
     public Page<Flight> getAllflights(String flightNumber, String flightName, Long routeId, int pageNo, int size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(ASC) ?

@@ -20,11 +20,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/routes")
 public class RouteController {
 
-    @Autowired
-    private RouteService routeService;
+    private final RouteService routeService;
+    private final RouteAssembler routeAssembler;
 
-    @Autowired
-    private RouteAssembler routeAssembler;
+    public  RouteController(RouteService routeService, RouteAssembler routeAssembler) {
+        this.routeService = routeService;
+        this.routeAssembler = routeAssembler;
+    }
 
     @GetMapping("/all")
     public PagedModel<EntityModel<Route>> getAllRoutes(

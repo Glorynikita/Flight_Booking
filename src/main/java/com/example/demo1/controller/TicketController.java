@@ -15,11 +15,14 @@ import static com.example.demo1.constants.CommonConstants.DELETED;
 @RestController
 @RequestMapping("/tickets")
 public class TicketController {
-    @Autowired
-    private TicketService ticketService;
 
-    @Autowired
-    private TicketAssembler ticketAssembler;
+    private final TicketService ticketService;
+    private final TicketAssembler ticketAssembler;
+
+    public  TicketController(TicketService ticketService, TicketAssembler ticketAssembler) {
+        this.ticketService = ticketService;
+        this.ticketAssembler = ticketAssembler;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<TicketResponseDto>> getTicket(@PathVariable Long id) {

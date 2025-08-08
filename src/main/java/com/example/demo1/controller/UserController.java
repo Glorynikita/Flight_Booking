@@ -22,8 +22,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired private UserService userService;
-    @Autowired private UserAssembler userAssembler;
+    private final UserService userService;
+    private final UserAssembler userAssembler;
+
+    public  UserController(UserService userService, UserAssembler userAssembler) {
+        this.userService = userService;
+        this.userAssembler = userAssembler;
+    }
 
     @GetMapping
     public PagedModel<EntityModel<UserResponseDto>> getUsers(
