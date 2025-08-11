@@ -3,7 +3,6 @@ package com.example.demo1.controller;
 import com.example.demo1.assembler.RouteAssembler;
 import com.example.demo1.model.Route;
 import com.example.demo1.service.RouteService;
-import com.example.demo1.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
@@ -20,7 +19,7 @@ public class RouteController {
     private final RouteService routeService;
     private final RouteAssembler routeAssembler;
 
-    public  RouteController(UserService userService, RouteService routeService, RouteAssembler routeAssembler) {
+    public  RouteController(RouteService routeService, RouteAssembler routeAssembler) {
         this.routeService = routeService;
         this.routeAssembler = routeAssembler;
     }
@@ -58,7 +57,6 @@ public class RouteController {
 
     @DeleteMapping("/{id}")
     public String deleteRoute(@PathVariable Long id) {
-        routeService.deleteRoute(id);
-        return DELETED;
+        return routeService.deleteRoute(id);
     }
 }

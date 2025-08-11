@@ -3,7 +3,6 @@ package com.example.demo1.service;
 import com.example.demo1.Specification.RouteSpecification;
 import com.example.demo1.model.Route;
 import com.example.demo1.repository.RouteRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,18 +12,17 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
-import static com.example.demo1.constants.CommonConstants.ASC;
-import static com.example.demo1.constants.CommonConstants.NOTFOUND;
+import static com.example.demo1.constants.CommonConstants.*;
 
 @Service
 public class RouteService {
 
-//    field injection
-//    @Autowired
-//    private RouteRepo routeRepo;
-//
-//    @Autowired
-//    private RouteSpecification routeSpecification;
+/*    field injection
+    @Autowired
+    private RouteRepo routeRepo;
+
+    @Autowired
+    private RouteSpecification routeSpecification;*/
 
     //constructor injection
     private final RouteRepo routeRepo;
@@ -81,10 +79,13 @@ public class RouteService {
         return routeRepo.save(existing);
     }
 
-    public void deleteRoute(Long id) {
+    public String deleteRoute(Long id) {
         if (!routeRepo.existsById(id)) {
             throw new RuntimeException(NOTFOUND);
         }
-        routeRepo.deleteById(id);
+        else {
+            routeRepo.deleteById(id);
+            return DELETED;
+        }
     }
 }

@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.demo1.constants.CommonConstants.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -23,18 +24,54 @@ public class RouteAssembler implements RepresentationModelAssembler<Route, Entit
         return EntityModel.of(route,
                 linkTo(methodOn(RouteController.class).getRouteById(route.getId())).withSelfRel(),
                 linkTo(methodOn(RouteController.class).getAllRoutes(null, null, null, null,
-                        null, 0, 10, "id", "asc")).withRel("routes"));
+                        null, 0, 10, ID, ASC)).withRel(ROUTES));
     }
 
-    public PagedModel<EntityModel<Route>> toPagedModel(Page<Route> pageData, String source, String destination, String departureTime, String arrivalTime,
-                                                       LocalDate travelDate, int pageNo, int size, String sortBy, String sortDir) {
+    public PagedModel<EntityModel<Route>> toPagedModel(Page<Route> pageData,
+                                                       String source,
+                                                       String destination,
+                                                       String departureTime,
+                                                       String arrivalTime,
+                                                       LocalDate travelDate,
+                                                       int pageNo,
+                                                       int size,
+                                                       String sortBy,
+                                                       String sortDir) {
+
         List<EntityModel<Route>> routes = pageData.getContent().stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
 
-        return PagedModel.of(routes,
-                new PagedModel.PageMetadata(pageData.getSize(), pageData.getNumber(), pageData.getTotalElements(), pageData.getTotalPages()),
-                linkTo(methodOn(RouteController.class).getAllRoutes(source, destination, departureTime, arrivalTime, travelDate, pageNo, size, sortBy, sortDir))
-                        .withSelfRel());
+        PagedModel<EntityModel<Route>> pagedModel = PagedModel.of(
+                routes,
+                new PagedModel.PageMetadata(
+                        pageData.getSize(),
+                        pageData.getNumber(),
+                        pageData.getTotalElements(),
+                        pageData.getTotalPages()
+                ),
+                linkTo(methodOn(RouteController.class)
+                        .getAllRoutes(source, destination, departureTime, arrivalTime, travelDate, pageNo, size, sortBy, sortDir))
+                        .withSelfRel()
+        );
+
+        pagedModel.add(linkTo(methodOn(RouteController.class).getAllRoutes(source, destination, departureTime, arrivalTime, travelDate, 0,
+                size, sortBy, sortDir)).withRel(FIRST));
+
+        pagedModel.add(linkTo(methodOn(RouteController.class).getAllRoutes(source, destination, departureTime, arrivalTime,
+                travelDate, pageData.getTotalPages() - 1, size, sortBy, sortDir)).withRel(LAST));
+
+        if (pageNo > 0) {
+            pagedModel.add(linkTo(methodOn(RouteController.class).getAllRoutes(source, destination, departureTime, arrivalTime, travelDate,
+                    pageNo - 1, size, sortBy, sortDir)).withRel(PREVIOUS));
+        }
+
+        if (pageNo < pageData.getTotalPages() - 1) {
+            pagedModel.add(linkTo(methodOn(RouteController.class).getAllRoutes(source, destination, departureTime, arrivalTime, travelDate,
+                    pageNo + 1, size, sortBy, sortDir)).withRel(NEXT));
+        }
+
+        return pagedModel;
     }
+
 }

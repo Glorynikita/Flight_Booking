@@ -7,28 +7,24 @@ import com.example.demo1.dto.responseDto.UserResponseDto;
 import com.example.demo1.model.Flight;
 import com.example.demo1.model.Ticket;
 import com.example.demo1.model.UserProfile;
-import com.example.demo1.repository.FlightRepo;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
+import static com.example.demo1.constants.CommonConstants.CONFIRM;
+
 @Component
 public class Mapper {
 
-    private final FlightRepo flightRepo;
-
-    public  Mapper(FlightRepo flightRepo) {
-        this.flightRepo = flightRepo;
-    }
 
     public  UserProfile toUserEntity(UserRequestDto userRequestDto) {
-//        UserProfile userProfile = new UserProfile();
-//        userProfile.setName(userRequestDto.getName());
-//        userProfile.setGender(userRequestDto.getGender());
-//        userProfile.setPhone(userRequestDto.getPhone());
-//        userProfile.setEmail(userRequestDto.getEmail());
-//        userProfile.setPassword(userRequestDto.getPassword());
-//        return userProfile;
+/*       UserProfile userProfile = new UserProfile();
+        userProfile.setName(userRequestDto.getName());
+        userProfile.setGender(userRequestDto.getGender());
+        userProfile.setPhone(userRequestDto.getPhone());
+        userProfile.setEmail(userRequestDto.getEmail());
+        userProfile.setPassword(userRequestDto.getPassword());
+        return userProfile; */
 
         return UserProfile.builder()
                 .name(userRequestDto.getName())
@@ -57,7 +53,7 @@ public class Mapper {
                 .seat(new Random().nextLong(1, 150))
                 .source(flight.getRoute().getSource())
                 .destination(flight.getRoute().getDestination())
-                .status("CONFIRMED")
+                .status(CONFIRM)
                 .flight(flight)
                 .userProfile(user)
                 .build();
@@ -80,9 +76,5 @@ public class Mapper {
                 .fare(ticket.getFare())
                 .build();
     }
-
-//    private Long generateRandomSeat() {
-//        return (long) ((Math.random() * 100) + 1);
-//    }
 }
 

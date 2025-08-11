@@ -8,8 +8,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.demo1.constants.CommonConstants.DELETED;
-
 @RestController
 @RequestMapping("/flights")
 public class FlightController {
@@ -53,7 +51,7 @@ public class FlightController {
 
     @DeleteMapping("/{id}")
     public String deleteFlightById(@PathVariable Long id) {
-        flightService.deleteFlightById(id);
-        return DELETED;
+        return flightService.deleteFlightById(id);
+
     }
 }

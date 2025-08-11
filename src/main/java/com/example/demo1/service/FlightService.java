@@ -10,8 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import static com.example.demo1.constants.CommonConstants.ASC;
-import static com.example.demo1.constants.CommonConstants.NOTFOUND;
+import static com.example.demo1.constants.CommonConstants.*;
 
 @Service
 public class FlightService {
@@ -62,10 +61,13 @@ public class FlightService {
         return flightRepo.save(existing);
     }
 
-    public void deleteFlightById(Long id) {
+    public String deleteFlightById(Long id) {
         if (!flightRepo.existsById(id)) {
             throw new RuntimeException(NOTFOUND);
         }
-        flightRepo.deleteById(id);
+        else {
+            flightRepo.deleteById(id);
+            return DELETED;
+        }
     }
 }

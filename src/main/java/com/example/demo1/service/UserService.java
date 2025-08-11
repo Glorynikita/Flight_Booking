@@ -7,8 +7,11 @@ import com.example.demo1.exception.UserNotFoundException;
 import com.example.demo1.mapper.Mapper;
 import com.example.demo1.model.UserProfile;
 import com.example.demo1.repository.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,7 @@ import java.util.Optional;
 
 import static com.example.demo1.constants.CommonConstants.*;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -31,14 +35,14 @@ public class UserService {
         Sort sort = sortDir.equalsIgnoreCase(ASC) ?
                 Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-
+        log.info("Fetching users from database...");
         Specification<UserProfile> spec = (root, query, cb) -> {
             if (filter != null && !filter.isEmpty()) {
-                String like = "%" + filter.toLowerCase() + "%";
+                String like = LIKE + filter.toLowerCase() + LIKE;
                 return cb.or(
-                        cb.like(cb.lower(root.get("name")), like),
-                        cb.like(cb.lower(root.get("email")), like),
-                        cb.like(cb.lower(root.get("gender")), like)
+                        cb.like(cb.lower(root.get(UserProfile.Fields.name)), like),
+                        cb.like(cb.lower(root.get(UserProfile.Fields.email)), like),
+                        cb.like(cb.lower(root.get(UserProfile.Fields.gender)), like)
                 );
             }
             return cb.conjunction();
@@ -48,17 +52,17 @@ public class UserService {
     }
 
 
-//Adding users without validating the duplicates
+/*Adding users without validating the duplicates
 
-//    public ApiResponse<UserResponseDto> addUser(UserRequestDto userRequestDto) {
-//        User_Profile userProfile = userRepo.save(Mapper.toUserEntity(userRequestDto));
-//        UserResponseDto userResponseDto = Mapper.toUserDto(userProfile);
-//        return new ApiResponse<>(ADDED,userResponseDto);
-//    }
+    public ApiResponse<UserResponseDto> addUser(UserRequestDto userRequestDto) {
+        User_Profile userProfile = userRepo.save(Mapper.toUserEntity(userRequestDto));
+        UserResponseDto userResponseDto = Mapper.toUserDto(userProfile);
+        return new ApiResponse<>(ADDED,userResponseDto);
+    }*/
 
 
     public UserResponseDto getUserById(Long id) {
-        return mapper.toUserDto(userRepo.findById(id)
+        return Mapper.toUserDto(userRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException(NOTFOUND)));
     }
 
@@ -67,7 +71,7 @@ public class UserService {
         if (existing.isPresent()) {
             throw new DuplicateUserException(FOUND);
         }
-        return mapper.toUserDto(userRepo.save(mapper.toUserEntity(dto)));
+        return Mapper.toUserDto(userRepo.save(mapper.toUserEntity(dto)));
     }
 
     public UserResponseDto updateUser(Long id, UserRequestDto dto) {
@@ -77,14 +81,17 @@ public class UserService {
         user.setGender(dto.getGender());
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());
-        return mapper.toUserDto(userRepo.save(user));
+        return Mapper.toUserDto(userRepo.save(user));
     }
 
-    public void deleteUser(Long id) {
+    public String deleteUser(Long id) {
         if(!userRepo.existsById(id)) {
             throw new UserNotFoundException(NOTFOUND);
         }
-        userRepo.deleteById(id);
+        else {
+            userRepo.deleteById(id);
+            return DELETED;
+        }
     }
 
 }

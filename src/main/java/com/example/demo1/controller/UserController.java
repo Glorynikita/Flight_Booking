@@ -10,8 +10,6 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.demo1.constants.CommonConstants.DELETED;
-
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -53,52 +51,8 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.ok(DELETED);
+        return ResponseEntity.ok(userService.deleteUser(id));
     }
 }
 
 
-
-
-
-//    @GetMapping
-//    public PagedModel<EntityModel<UserResponseDto>> getUsers(
-//            @RequestParam(required = false) String filter,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(defaultValue = "userId") String sortBy,
-//            @RequestParam(defaultValue = "asc") String sortDir
-//    ) {
-//        Page<UserResponseDto> users = userService.getUsers(filter, page, size, sortBy, sortDir);
-//
-//        List<EntityModel<UserResponseDto>> entities = users.getContent().stream()
-//                .map(userAssembler::toModel)
-//                .collect(Collectors.toList());
-//
-//        return PagedModel.of(
-//                entities,
-//                new PagedModel.PageMetadata(
-//                        users.getSize(),
-//                        users.getNumber(),
-//                        users.getTotalElements(),
-//                        users.getTotalPages()
-//                ),
-//                linkTo(methodOn(UserController.class).getUsers(filter, page, size, sortBy, sortDir)).withSelfRel()
-//        );
-//    }
-
-
-//    @GetMapping("/users")
-//    public ResponseEntity<PagedModel<EntityModel<UserResponseDto>>> getUsers(
-//            @RequestParam(required = false) String filter,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(defaultValue = "userId") String sortBy,
-//            @RequestParam(defaultValue = "asc") String sortDir,
-//            PagedResourcesAssembler<UserResponseDto> pagedAssembler // Must removed
-//    ) {
-//        Page<UserResponseDto> users = userService.getUsers(filter, page, size, sortBy, sortDir);
-//        PagedModel<EntityModel<UserResponseDto>> model = pagedAssembler.toModel(users, userAssembler);
-//        return ResponseEntity.ok(model);
-//    }

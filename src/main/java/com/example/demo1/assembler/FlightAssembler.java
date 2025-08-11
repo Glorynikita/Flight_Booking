@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.demo1.constants.CommonConstants.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -21,19 +22,50 @@ public class FlightAssembler implements RepresentationModelAssembler<Flight, Ent
     public EntityModel<Flight> toModel(Flight flight) {
         return EntityModel.of(flight,
                 linkTo(methodOn(FlightController.class).getFlightById(flight.getId())).withSelfRel(),
-                linkTo(methodOn(FlightController.class).getAllFlights(null, null, null, 0, 10, "id", "asc"))
-                        .withRel("all-flights"));
+                linkTo(methodOn(FlightController.class).getAllFlights(null, null, null, 0, 10, ID, ASC))
+                        .withRel(ALLFLIGHTS));
     }
 
-    public PagedModel<EntityModel<Flight>> toPagedModel(Page<Flight> pageData, String flightNumber, String flightName, Long routeId, int pageNo, int size, String sortBy,
-                                                        String sortDir) {
+    public PagedModel<EntityModel<Flight>> toPagedModel(
+            Page<Flight> pageData,
+            String flightNumber,
+            String flightName,
+            Long routeId,
+            int pageNo,
+            int size,
+            String sortBy,
+            String sortDir) {
+
         List<EntityModel<Flight>> flights = pageData.getContent().stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
 
-        return PagedModel.of(flights,
-                new PagedModel.PageMetadata(pageData.getSize(), pageData.getNumber(), pageData.getTotalElements(), pageData.getTotalPages()),
-                linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId, pageNo, size, sortBy, sortDir)).withSelfRel());
+        PagedModel<EntityModel<Flight>> pagedModel = PagedModel.of(
+                flights,
+                new PagedModel.PageMetadata(pageData.getSize(), pageData.getNumber(), pageData.getTotalElements(), pageData.getTotalPages())
+        );
+
+        pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId,
+                pageNo, size, sortBy, sortDir)).withSelfRel());
+
+        pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId, 0,
+                size, sortBy, sortDir)).withRel(FIRST));
+
+        pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId,
+                pageData.getTotalPages() - 1, size, sortBy, sortDir)).withRel(LAST));
+
+        if (pageData.hasPrevious()) {
+            pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId,
+                    pageNo - 1, size, sortBy, sortDir)).withRel(PREVIOUS));
+        }
+
+        if (pageData.hasNext()) {
+            pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId, pageNo + 1,
+                    size, sortBy, sortDir)).withRel(NEXT));
+        }
+
+        return pagedModel;
     }
+
 }
 

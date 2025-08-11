@@ -3,6 +3,8 @@ package com.example.demo1.service;
 import com.example.demo1.dto.requestDto.TicketRequestDto;
 import com.example.demo1.dto.requestDto.UserRequestDto;
 import com.example.demo1.dto.responseDto.TicketResponseDto;
+import com.example.demo1.exception.InvalidUserException;
+import com.example.demo1.exception.TicketNotFound;
 import com.example.demo1.mapper.Mapper;
 import com.example.demo1.model.Flight;
 import com.example.demo1.model.Ticket;
@@ -10,14 +12,14 @@ import com.example.demo1.model.UserProfile;
 import com.example.demo1.repository.FlightRepo;
 import com.example.demo1.repository.TicketRepo;
 import com.example.demo1.repository.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.example.demo1.constants.CommonConstants.INVALID;
-import static com.example.demo1.constants.CommonConstants.NOTFOUND;
+import static com.example.demo1.constants.CommonConstants.*;
 
+@Slf4j
 @Service
 public class TicketService {
 
@@ -31,9 +33,11 @@ public class TicketService {
         this.flightRepo = flightRepo;
     }
 
+
     public TicketResponseDto getTicketById(Long id) {
+        log.info("Ticket Details");
         Ticket ticket = ticketRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException(NOTFOUND));
+                .orElseThrow(()->new TicketNotFound(NOTFOUND));
         return Mapper.toTicketDto(ticket);
     }
 
@@ -44,9 +48,15 @@ public class TicketService {
 
         UserRequestDto userRequestDto = dto.getUser();
 
+        /*
+          Login Validation
+         */
         userRepo.findByEmailAndPassword(userRequestDto.getEmail(), userRequestDto.getPassword())
-                .orElseThrow(()->new RuntimeException(INVALID));
+                .orElseThrow(()->new InvalidUserException(INVALID));
 
+        /*
+          Duplicate sign in check
+         */
         Optional<UserProfile> userOpt = userRepo.findByEmailAndPhone(
                 dto.getUser().getEmail(), dto.getUser().getPhone());
 
@@ -63,14 +73,18 @@ public class TicketService {
         return Mapper.toTicketDto(t);
     }
 
-    public void deleteTicket(Long id) {
+    public String deleteTicket(Long id) {
         if (!ticketRepo.existsById(id)) {
             throw new RuntimeException(NOTFOUND);
         }
-        ticketRepo.deleteById(id);
+        else {
+            ticketRepo.deleteById(id);
+            return DELETED;
+        }
+
     }
 
-    //Fare calc based on travelclass
+    //Fare calc based on travelClass
     public String calculateFare(String travelClass) {
         if(travelClass.equalsIgnoreCase("business")){
             return "10000";
@@ -81,5 +95,6 @@ public class TicketService {
         }
 
     }
+
 
 }

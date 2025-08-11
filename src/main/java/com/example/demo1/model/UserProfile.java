@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldNameConstants;
+
 import java.util.Collection;
 
 @Data
@@ -12,6 +14,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @Entity
 @Builder
+@FieldNameConstants
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"email", "phone"})
 })
