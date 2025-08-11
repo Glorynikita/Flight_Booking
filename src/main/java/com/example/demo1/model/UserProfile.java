@@ -31,7 +31,7 @@ public class UserProfile {
     private String email;
     private String password;
 
-    @OneToMany(mappedBy = "userProfile")
+    @OneToMany(mappedBy = "userProfile",  cascade = CascadeType.ALL)
     private Collection<Ticket> ticket;
 
 

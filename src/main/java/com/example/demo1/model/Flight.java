@@ -19,7 +19,8 @@ public class Flight {
     private String flightNumber;
     private String flightName;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "route_id")
     private Route route;
+
 }
