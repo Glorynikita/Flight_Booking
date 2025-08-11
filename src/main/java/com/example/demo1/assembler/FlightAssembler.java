@@ -32,17 +32,8 @@ public class FlightAssembler implements RepresentationModelAssembler<Flight, Ent
                 .collect(Collectors.toList());
 
         return PagedModel.of(flights,
-                new PagedModel.PageMetadata(
-                        pageData.getSize(),
-                        pageData.getNumber(),
-                        pageData.getTotalElements(),
-                        pageData.getTotalPages()
-                ),
-                linkTo(methodOn(FlightController.class).getAllFlights(
-                        flightNumber, flightName, routeId,
-                        pageNo, size, sortBy, sortDir))
-                        .withSelfRel()
-        );
+                new PagedModel.PageMetadata(pageData.getSize(), pageData.getNumber(), pageData.getTotalElements(), pageData.getTotalPages()),
+                linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId, pageNo, size, sortBy, sortDir)).withSelfRel());
     }
 }
 

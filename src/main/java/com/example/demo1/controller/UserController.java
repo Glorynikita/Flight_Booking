@@ -62,8 +62,6 @@ public class UserController {
 
 
 
-
-
 //    @GetMapping
 //    public PagedModel<EntityModel<UserResponseDto>> getUsers(
 //            @RequestParam(required = false) String filter,

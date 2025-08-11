@@ -54,7 +54,8 @@ public class FlightService {
     }
 
     public Flight updateFlight(Long id, Flight flight) {
-        Flight existing = new Flight();
+        Flight existing =flightRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException(NOTFOUND));
         existing.setFlightNumber(flight.getFlightNumber());
         existing.setFlightName(flight.getFlightName());
         existing.setRoute(flight.getRoute());
@@ -62,8 +63,9 @@ public class FlightService {
     }
 
     public void deleteFlightById(Long id) {
+        if (!flightRepo.existsById(id)) {
+            throw new RuntimeException(NOTFOUND);
+        }
         flightRepo.deleteById(id);
     }
-
-
 }

@@ -2,6 +2,7 @@ package com.example.demo1.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"email", "phone"})
 })

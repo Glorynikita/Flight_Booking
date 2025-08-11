@@ -33,16 +33,8 @@ public class RouteAssembler implements RepresentationModelAssembler<Route, Entit
                 .collect(Collectors.toList());
 
         return PagedModel.of(routes,
-                new PagedModel.PageMetadata(
-                        pageData.getSize(),
-                        pageData.getNumber(),
-                        pageData.getTotalElements(),
-                        pageData.getTotalPages()
-                ),
-                linkTo(methodOn(RouteController.class).getAllRoutes(
-                        source, destination, departureTime, arrivalTime, travelDate,
-                        pageNo, size, sortBy, sortDir
-                )).withSelfRel()
-        );
+                new PagedModel.PageMetadata(pageData.getSize(), pageData.getNumber(), pageData.getTotalElements(), pageData.getTotalPages()),
+                linkTo(methodOn(RouteController.class).getAllRoutes(source, destination, departureTime, arrivalTime, travelDate, pageNo, size, sortBy, sortDir))
+                        .withSelfRel());
     }
 }

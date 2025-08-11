@@ -71,7 +71,8 @@ public class RouteService {
     }
 
     public Route updateRoute(Long id, Route route) {
-        Route existing = new Route();
+        Route existing = routeRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException(NOTFOUND));
         existing.setSource(route.getSource());
         existing.setDestination(route.getDestination());
         existing.setDepartureTime(route.getDepartureTime());
@@ -81,6 +82,9 @@ public class RouteService {
     }
 
     public void deleteRoute(Long id) {
+        if (!routeRepo.existsById(id)) {
+            throw new RuntimeException(NOTFOUND);
+        }
         routeRepo.deleteById(id);
     }
 }

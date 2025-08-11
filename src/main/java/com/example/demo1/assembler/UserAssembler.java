@@ -34,39 +34,10 @@ public class UserAssembler implements RepresentationModelAssembler<UserResponseD
                 .collect(Collectors.toList());
 
         return PagedModel.of(users,
-                new PagedModel.PageMetadata(
-                        pageData.getSize(),
-                        pageData.getNumber(),
-                        pageData.getTotalElements(),
-                        pageData.getTotalPages()
-                ),
-                linkTo(methodOn(UserController.class)
-                        .getUsers(filter, page, size, sortBy, sortDir))
-                        .withSelfRel()
-        );
+                new PagedModel.PageMetadata(pageData.getSize(), pageData.getNumber(), pageData.getTotalElements(), pageData.getTotalPages()),
+                linkTo(methodOn(UserController.class).getUsers(filter, page, size, sortBy, sortDir)).withSelfRel());
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

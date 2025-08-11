@@ -64,6 +64,9 @@ public class TicketService {
     }
 
     public void deleteTicket(Long id) {
+        if (!ticketRepo.existsById(id)) {
+            throw new RuntimeException(NOTFOUND);
+        }
         ticketRepo.deleteById(id);
     }
 
@@ -78,6 +81,5 @@ public class TicketService {
         }
 
     }
-
 
 }

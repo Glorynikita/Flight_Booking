@@ -1,10 +1,12 @@
 package com.example.demo1.dto.responseDto;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
+@Builder
 public class TicketResponseDto {
     private Long id;
     private String name;
