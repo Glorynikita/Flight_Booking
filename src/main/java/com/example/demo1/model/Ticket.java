@@ -23,11 +23,11 @@ public class Ticket {
     private String fare;
     private String status;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private UserProfile userProfile;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "flight_id")
     private Flight flight;
 }

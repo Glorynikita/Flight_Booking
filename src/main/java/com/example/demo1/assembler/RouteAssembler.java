@@ -23,8 +23,9 @@ public class RouteAssembler implements RepresentationModelAssembler<Route, Entit
     public EntityModel<Route> toModel(Route route) {
         return EntityModel.of(route,
                 linkTo(methodOn(RouteController.class).getRouteById(route.getId())).withSelfRel(),
-                linkTo(methodOn(RouteController.class).getAllRoutes(null, null, null, null,
-                        null, 0, 10, ID, ASC)).withRel(ROUTES));
+                linkTo(methodOn(RouteController.class)
+                        .getAllRoutes(null, null, null, null,
+                        null, 0, 10, ID, ASC)).withRel(ROUTES).expand());
     }
 
     public PagedModel<EntityModel<Route>> toPagedModel(Page<Route> pageData,
@@ -52,23 +53,23 @@ public class RouteAssembler implements RepresentationModelAssembler<Route, Entit
                 ),
                 linkTo(methodOn(RouteController.class)
                         .getAllRoutes(source, destination, departureTime, arrivalTime, travelDate, pageNo, size, sortBy, sortDir))
-                        .withSelfRel()
+                        .withSelfRel().expand()
         );
 
         pagedModel.add(linkTo(methodOn(RouteController.class).getAllRoutes(source, destination, departureTime, arrivalTime, travelDate, 0,
-                size, sortBy, sortDir)).withRel(FIRST));
+                size, sortBy, sortDir)).withRel(FIRST).expand());
 
         pagedModel.add(linkTo(methodOn(RouteController.class).getAllRoutes(source, destination, departureTime, arrivalTime,
-                travelDate, pageData.getTotalPages() - 1, size, sortBy, sortDir)).withRel(LAST));
+                travelDate, pageData.getTotalPages() - 1, size, sortBy, sortDir)).withRel(LAST).expand());
 
         if (pageNo > 0) {
             pagedModel.add(linkTo(methodOn(RouteController.class).getAllRoutes(source, destination, departureTime, arrivalTime, travelDate,
-                    pageNo - 1, size, sortBy, sortDir)).withRel(PREVIOUS));
+                    pageNo - 1, size, sortBy, sortDir)).withRel(PREVIOUS).expand());
         }
 
         if (pageNo < pageData.getTotalPages() - 1) {
             pagedModel.add(linkTo(methodOn(RouteController.class).getAllRoutes(source, destination, departureTime, arrivalTime, travelDate,
-                    pageNo + 1, size, sortBy, sortDir)).withRel(NEXT));
+                    pageNo + 1, size, sortBy, sortDir)).withRel(NEXT).expand());
         }
 
         return pagedModel;

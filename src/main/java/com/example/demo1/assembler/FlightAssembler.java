@@ -22,8 +22,9 @@ public class FlightAssembler implements RepresentationModelAssembler<Flight, Ent
     public EntityModel<Flight> toModel(Flight flight) {
         return EntityModel.of(flight,
                 linkTo(methodOn(FlightController.class).getFlightById(flight.getId())).withSelfRel(),
-                linkTo(methodOn(FlightController.class).getAllFlights(null, null, null, 0, 10, ID, ASC))
-                        .withRel(ALLFLIGHTS));
+                linkTo(methodOn(FlightController.class)
+                        .getAllFlights(null, null, null, 0, 10, ID, ASC))
+                        .withRel(ALLFLIGHTS).expand());
     }
 
     public PagedModel<EntityModel<Flight>> toPagedModel(
@@ -46,22 +47,22 @@ public class FlightAssembler implements RepresentationModelAssembler<Flight, Ent
         );
 
         pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId,
-                pageNo, size, sortBy, sortDir)).withSelfRel());
+                pageNo, size, sortBy, sortDir)).withSelfRel().expand());
 
         pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId, 0,
-                size, sortBy, sortDir)).withRel(FIRST));
+                size, sortBy, sortDir)).withRel(FIRST).expand());
 
         pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId,
-                pageData.getTotalPages() - 1, size, sortBy, sortDir)).withRel(LAST));
+                pageData.getTotalPages() - 1, size, sortBy, sortDir)).withRel(LAST).expand());
 
         if (pageData.hasPrevious()) {
             pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId,
-                    pageNo - 1, size, sortBy, sortDir)).withRel(PREVIOUS));
+                    pageNo - 1, size, sortBy, sortDir)).withRel(PREVIOUS).expand());
         }
 
         if (pageData.hasNext()) {
             pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId, pageNo + 1,
-                    size, sortBy, sortDir)).withRel(NEXT));
+                    size, sortBy, sortDir)).withRel(NEXT).expand());
         }
 
         return pagedModel;

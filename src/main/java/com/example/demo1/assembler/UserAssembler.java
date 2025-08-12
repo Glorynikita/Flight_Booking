@@ -39,19 +39,19 @@ public class UserAssembler implements RepresentationModelAssembler<UserResponseD
         PagedModel<EntityModel<UserResponseDto>> pagedModel = PagedModel.of(
                 users,
                 new PagedModel.PageMetadata(pageData.getSize(), pageData.getNumber(), pageData.getTotalElements(), pageData.getTotalPages()),
-                linkTo(methodOn(UserController.class).getUsers(filter, page, size, sortBy, sortDir)).withSelfRel()
+                linkTo(methodOn(UserController.class).getUsers(filter, page, size, sortBy, sortDir)).withSelfRel().expand()
         );
 
-        pagedModel.add(linkTo(methodOn(UserController.class).getUsers(filter, 0, size, sortBy, sortDir)).withRel(FIRST));
+        pagedModel.add(linkTo(methodOn(UserController.class).getUsers(filter, 0, size, sortBy, sortDir)).withRel(FIRST).expand());
 
-        pagedModel.add(linkTo(methodOn(UserController.class).getUsers(filter, pageData.getTotalPages() - 1, size, sortBy, sortDir)).withRel(LAST));
+        pagedModel.add(linkTo(methodOn(UserController.class).getUsers(filter, pageData.getTotalPages() - 1, size, sortBy, sortDir)).withRel(LAST).expand());
 
         if (page > 0) {
-            pagedModel.add(linkTo(methodOn(UserController.class).getUsers(filter, page - 1, size, sortBy, sortDir)).withRel(PREVIOUS));
+            pagedModel.add(linkTo(methodOn(UserController.class).getUsers(filter, page - 1, size, sortBy, sortDir)).withRel(PREVIOUS).expand());
         }
 
         if (page < pageData.getTotalPages() - 1) {
-            pagedModel.add(linkTo(methodOn(UserController.class).getUsers(filter, page + 1, size, sortBy, sortDir)).withRel(NEXT));
+            pagedModel.add(linkTo(methodOn(UserController.class).getUsers(filter, page + 1, size, sortBy, sortDir)).withRel(NEXT).expand());
         }
 
         return pagedModel;

@@ -16,7 +16,6 @@ import static com.example.demo1.constants.CommonConstants.CONFIRM;
 @Component
 public class Mapper {
 
-
     public  UserProfile toUserEntity(UserRequestDto userRequestDto) {
 /*       UserProfile userProfile = new UserProfile();
         userProfile.setName(userRequestDto.getName());
@@ -46,7 +45,8 @@ public class Mapper {
     }
 
 
-    public static Ticket toTicketEntity(TicketRequestDto dto, Flight flight, UserProfile user) {
+
+    public static Ticket toTicketEntity( TicketRequestDto dto, Flight flight, UserProfile user) {
         return Ticket.builder()
                 .passangerName(user.getName())
                 .travelClass(dto.getTravelClass())
@@ -59,7 +59,11 @@ public class Mapper {
                 .build();
     }
 
-    public static TicketResponseDto toTicketDto(Ticket ticket) {
+
+
+
+    public static TicketResponseDto toTicketDto(Ticket ticket, Long bookedSeatCount) {
+        Long availableSeats = ticket.getFlight().getTotalSeats() - bookedSeatCount;
         return TicketResponseDto.builder()
                 .id(ticket.getId())
                 .name(ticket.getPassangerName())
@@ -74,7 +78,9 @@ public class Mapper {
                 .seat(ticket.getSeat())
                 .travelClass(ticket.getTravelClass())
                 .fare(ticket.getFare())
+                .availableSeats(availableSeats)
                 .build();
     }
+
 }
 

@@ -4,6 +4,7 @@ import com.example.demo1.assembler.UserAssembler;
 import com.example.demo1.dto.requestDto.UserRequestDto;
 import com.example.demo1.dto.responseDto.UserResponseDto;
 import com.example.demo1.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
@@ -22,7 +23,7 @@ public class UserController {
         this.userAssembler = userAssembler;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public PagedModel<EntityModel<UserResponseDto>> getUsers(
             @RequestParam(required = false) String filter,
             @RequestParam(defaultValue = "0") int page,
@@ -40,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public EntityModel<UserResponseDto> addUser(@RequestBody UserRequestDto dto) {
+    public EntityModel<UserResponseDto> addUser(@Valid @RequestBody UserRequestDto dto) {
         return userAssembler.toModel(userService.addUser(dto));
     }
 

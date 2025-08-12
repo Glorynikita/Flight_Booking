@@ -33,14 +33,14 @@ public class TicketService {
         this.flightRepo = flightRepo;
     }
 
-
     public TicketResponseDto getTicketById(Long id) {
         log.info("Ticket Details");
         Ticket ticket = ticketRepo.findById(id)
                 .orElseThrow(()->new TicketNotFound(NOTFOUND));
-        return Mapper.toTicketDto(ticket);
-    }
 
+        Long bookedSeatCount = ticketRepo.countByFlightId(ticket.getFlight().getId());
+        return Mapper.toTicketDto(ticket,  bookedSeatCount);
+    }
 
     public TicketResponseDto bookTicket(TicketRequestDto dto) {
         Flight flight = flightRepo.findById(dto.getFlightNumber())
@@ -65,12 +65,14 @@ public class TicketService {
                         dto.getUser().getGender(), dto.getUser().getPhone(), dto.getUser().getEmail(),
                          dto.getUser().getPassword(),null)));
 
+        Long bookedSeatCount = ticketRepo.countByFlightId(flight.getId());
+
         Ticket ticket = Mapper.toTicketEntity(dto, flight, user);
 
         String fare = calculateFare(dto.getTravelClass());
         ticket.setFare(fare);
         Ticket t = ticketRepo.save(ticket);
-        return Mapper.toTicketDto(t);
+        return Mapper.toTicketDto(t, bookedSeatCount);
     }
 
     public String deleteTicket(Long id) {

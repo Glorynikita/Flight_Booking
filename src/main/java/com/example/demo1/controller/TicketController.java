@@ -4,6 +4,7 @@ import com.example.demo1.assembler.TicketAssembler;
 import com.example.demo1.dto.requestDto.TicketRequestDto;
 import com.example.demo1.dto.responseDto.TicketResponseDto;
 import com.example.demo1.service.TicketService;
+import jakarta.validation.Valid;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

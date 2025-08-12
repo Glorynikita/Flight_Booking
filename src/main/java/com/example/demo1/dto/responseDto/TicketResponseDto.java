@@ -21,5 +21,6 @@ public class TicketResponseDto {
     private Long seat;
     private String travelClass;
     private String fare;
+    private Long availableSeats;
 
 }
