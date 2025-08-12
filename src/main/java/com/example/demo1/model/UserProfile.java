@@ -36,20 +36,4 @@ public class UserProfile {
 
 
 
-
-
-
-
-
-
-
-
-
-//    public Collection<Ticket> getTicket() {
-//        return ticket;
-//    }
-//
-//    public void setTicket(Collection<Ticket> ticket) {
-//        this.ticket = ticket;
-//    }
 }

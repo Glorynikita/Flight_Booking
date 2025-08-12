@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public EntityModel<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UserRequestDto dto) {
+    public EntityModel<UserResponseDto> updateUser(@PathVariable Long id,@Valid @RequestBody UserRequestDto dto) {
         return userAssembler.toModel(userService.updateUser(id, dto));
     }
 
