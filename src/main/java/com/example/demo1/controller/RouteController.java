@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
-import static com.example.demo1.constants.CommonConstants.DELETED;
-
 @RestController
 @RequestMapping("/routes")
 public class RouteController {

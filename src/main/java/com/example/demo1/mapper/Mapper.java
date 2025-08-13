@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
-import static com.example.demo1.constants.CommonConstants.CONFIRM;
+import static com.example.demo1.constants.MessageConstants.CONFIRM;
 
 @Component
 public class Mapper {

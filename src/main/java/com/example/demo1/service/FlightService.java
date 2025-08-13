@@ -11,6 +11,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import static com.example.demo1.constants.CommonConstants.*;
+import static com.example.demo1.constants.MessageConstants.DELETED;
+import static com.example.demo1.constants.MessageConstants.NOTFOUND;
 
 @Service
 public class FlightService {
