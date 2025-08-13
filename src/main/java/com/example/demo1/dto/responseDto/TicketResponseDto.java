@@ -1,5 +1,6 @@
 package com.example.demo1.dto.responseDto;
 
+import com.example.demo1.model.SeatClass;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,7 +20,7 @@ public class TicketResponseDto {
     private String arrivalTime;
     private LocalDate travelDate;
     private Long seat;
-    private String travelClass;
+    private SeatClass travelClass;
     private String fare;
     private Long availableSeats;
 

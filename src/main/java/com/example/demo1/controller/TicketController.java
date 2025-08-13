@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/tickets")
 public class TicketController {
@@ -29,8 +31,8 @@ public class TicketController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<TicketResponseDto> bookTicket(@RequestBody TicketRequestDto dto) {
-        TicketResponseDto response = ticketService.bookTicket(dto);
+    public ResponseEntity<List<TicketResponseDto>> bookTicket(@RequestBody TicketRequestDto dto) {
+        List<TicketResponseDto> response = ticketService.bookTicket(dto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

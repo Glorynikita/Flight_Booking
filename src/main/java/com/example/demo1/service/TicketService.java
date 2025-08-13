@@ -1,5 +1,6 @@
 package com.example.demo1.service;
 
+import com.example.demo1.dto.requestDto.PassangerDto;
 import com.example.demo1.dto.requestDto.TicketRequestDto;
 import com.example.demo1.dto.requestDto.UserRequestDto;
 import com.example.demo1.dto.responseDto.TicketResponseDto;
@@ -7,6 +8,7 @@ import com.example.demo1.exception.InvalidUserException;
 import com.example.demo1.exception.TicketNotFound;
 import com.example.demo1.mapper.Mapper;
 import com.example.demo1.model.Flight;
+import com.example.demo1.model.SeatClass;
 import com.example.demo1.model.Ticket;
 import com.example.demo1.model.UserProfile;
 import com.example.demo1.repository.FlightRepo;
@@ -15,6 +17,8 @@ import com.example.demo1.repository.UserRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.demo1.constants.CommonConstants.*;
@@ -42,37 +46,41 @@ public class TicketService {
         return Mapper.toTicketDto(ticket,  bookedSeatCount);
     }
 
-    public TicketResponseDto bookTicket(TicketRequestDto dto) {
+
+
+    public List<TicketResponseDto> bookTicket(TicketRequestDto dto) {
         Flight flight = flightRepo.findById(dto.getFlightNumber())
                 .orElseThrow(() -> new RuntimeException(NOTFOUND));
 
         UserRequestDto userRequestDto = dto.getUser();
 
-        /*
-          Login Validation
-         */
+        // Login validation
         userRepo.findByEmailAndPassword(userRequestDto.getEmail(), userRequestDto.getPassword())
-                .orElseThrow(()->new InvalidUserException(INVALID));
+                .orElseThrow(() -> new InvalidUserException(INVALID));
 
-        /*
-          Duplicate sign in check
-         */
+        // Duplicate sign in check
         Optional<UserProfile> userOpt = userRepo.findByEmailAndPhone(
                 dto.getUser().getEmail(), dto.getUser().getPhone());
 
         UserProfile user = userOpt.orElseGet(() -> userRepo.save(
                 new UserProfile(null, dto.getUser().getName(),
                         dto.getUser().getGender(), dto.getUser().getPhone(), dto.getUser().getEmail(),
-                         dto.getUser().getPassword(),null)));
+                        dto.getUser().getPassword(), null)));
 
         Long bookedSeatCount = ticketRepo.countByFlightId(flight.getId());
 
-        Ticket ticket = Mapper.toTicketEntity(dto, flight, user);
+        List<TicketResponseDto> bookedTickets = new ArrayList<>();
 
-        String fare = calculateFare(dto.getTravelClass());
-        ticket.setFare(fare);
-        Ticket t = ticketRepo.save(ticket);
-        return Mapper.toTicketDto(t, bookedSeatCount);
+        for (PassangerDto passenger : dto.getPassengers()) {
+            Ticket ticket = Mapper.toTicketEntity(passenger, dto, flight, user);
+            String fare = calculateFare(dto.getTravelClass());
+            ticket.setFare(fare);
+
+            Ticket savedTicket = ticketRepo.save(ticket);
+            bookedTickets.add(Mapper.toTicketDto(savedTicket, bookedSeatCount + bookedTickets.size()));
+        }
+
+        return bookedTickets;
     }
 
     public String deleteTicket(Long id) {
@@ -81,22 +89,21 @@ public class TicketService {
         }
         else {
             ticketRepo.deleteById(id);
-            return DELETED;
+            return CANCEL;
         }
 
     }
 
     //Fare calc based on travelClass
-    public String calculateFare(String travelClass) {
-        if(travelClass.equalsIgnoreCase("business")){
-            return "10000";
+    public String calculateFare(SeatClass travelClass) {
+        switch (travelClass) {
+            case BUSINESS:
+                return "10000";
+            case ECONOMY:
+                return "5000";
+            default:
+                throw new IllegalStateException("Unexpected value: " + travelClass);
         }
-        else
-        {
-            return "5000";
-        }
-
     }
-
 
 }

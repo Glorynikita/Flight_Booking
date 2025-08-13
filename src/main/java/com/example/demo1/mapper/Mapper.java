@@ -1,5 +1,6 @@
 package com.example.demo1.mapper;
 
+import com.example.demo1.dto.requestDto.PassangerDto;
 import com.example.demo1.dto.requestDto.TicketRequestDto;
 import com.example.demo1.dto.requestDto.UserRequestDto;
 import com.example.demo1.dto.responseDto.TicketResponseDto;
@@ -45,10 +46,10 @@ public class Mapper {
     }
 
 
-
-    public static Ticket toTicketEntity( TicketRequestDto dto, Flight flight, UserProfile user) {
+    public static Ticket toTicketEntity(PassangerDto passangerDto, TicketRequestDto dto, Flight flight, UserProfile user) {
         return Ticket.builder()
-                .passangerName(user.getName())
+                .passangerName(passangerDto.getName())
+                .gender(passangerDto.getGender()) //added
                 .travelClass(dto.getTravelClass())
                 .seat(new Random().nextLong(1, 150))
                 .source(flight.getRoute().getSource())
@@ -58,9 +59,6 @@ public class Mapper {
                 .userProfile(user)
                 .build();
     }
-
-
-
 
     public static TicketResponseDto toTicketDto(Ticket ticket, Long bookedSeatCount) {
         Long availableSeats = ticket.getFlight().getTotalSeats() - bookedSeatCount;

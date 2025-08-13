@@ -1,5 +1,6 @@
 package com.example.demo1.dto.requestDto;
 
+import com.example.demo1.model.SeatClass;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +15,8 @@ import java.util.List;
 @Builder
 public class TicketRequestDto {
     private Long flightNumber;
-    private String travelClass;
+    private SeatClass travelClass;
     private UserRequestDto user;
     private LocalDate travelDate;
+    private List<PassangerDto> passengers;
 }

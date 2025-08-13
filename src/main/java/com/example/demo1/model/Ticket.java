@@ -16,7 +16,9 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String passangerName;
-    private String travelClass;
+    private String gender;
+    @Enumerated(EnumType.STRING)
+    private SeatClass travelClass;
     private Long seat;
     private String source;
     private String destination;
