@@ -2,14 +2,10 @@ package com.example.demo1.assembler;
 
 import com.example.demo1.controller.UserController;
 import com.example.demo1.dto.responseDto.UserResponseDto;
-import org.springframework.data.domain.Page;
+import com.example.demo1.model.UserProfile;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.example.demo1.constants.CommonConstants.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -29,55 +25,14 @@ public class UserAssembler implements RepresentationModelAssembler<UserResponseD
         );
     }
 
-    public PagedModel<EntityModel<UserResponseDto>> toPagedModel(
-            Page<UserResponseDto> pageData, String filter, int page, int size, String sortBy, String sortDir) {
-
-        List<EntityModel<UserResponseDto>> users = pageData.getContent().stream()
-                .map(this::toModel)
-                .collect(Collectors.toList());
-
-        PagedModel<EntityModel<UserResponseDto>> pagedModel = PagedModel.of(
-                users,
-                new PagedModel.PageMetadata(pageData.getSize(), pageData.getNumber(), pageData.getTotalElements(), pageData.getTotalPages()),
-                linkTo(methodOn(UserController.class).getUsers(filter, page, size, sortBy, sortDir)).withSelfRel().expand()
-        );
-
-        pagedModel.add(linkTo(methodOn(UserController.class).getUsers(filter, 0, size, sortBy, sortDir)).withRel(FIRST).expand());
-
-        pagedModel.add(linkTo(methodOn(UserController.class).getUsers(filter, pageData.getTotalPages() - 1, size, sortBy, sortDir)).withRel(LAST).expand());
-
-        if (page > 0) {
-            pagedModel.add(linkTo(methodOn(UserController.class).getUsers(filter, page - 1, size, sortBy, sortDir)).withRel(PREVIOUS).expand());
-        }
-
-        if (page < pageData.getTotalPages() - 1) {
-            pagedModel.add(linkTo(methodOn(UserController.class).getUsers(filter, page + 1, size, sortBy, sortDir)).withRel(NEXT).expand());
-        }
-
-        return pagedModel;
+    public static UserResponseDto toUserDto(UserProfile userProfile) {
+        return UserResponseDto.builder()
+                .userId(userProfile.getUserId())
+                .name(userProfile.getName())
+                .gender(userProfile.getGender())
+                .phone(userProfile.getPhone())
+                .email(userProfile.getEmail())
+                .build();
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//    public PagedModel<EntityModel<UserResponseDto>> toPagedModel(Page<UserResponseDto> pageData, String filter, int page, int size, String sortBy, String sortDir) {
-//        List<EntityModel<UserResponseDto>> users = pageData.getContent().stream()
-//                .map(this::toModel)
-//                .collect(Collectors.toList());
-//
-//        return PagedModel.of(users,
-//                new PagedModel.PageMetadata(pageData.getSize(), pageData.getNumber(), pageData.getTotalElements(), pageData.getTotalPages()),
-//                linkTo(methodOn(UserController.class).getUsers(filter, page, size, sortBy, sortDir)).withSelfRel());
-//    }
 

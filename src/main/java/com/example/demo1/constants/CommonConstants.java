@@ -17,10 +17,6 @@ public class CommonConstants {
     public static final String BOOKTICKET = "book-ticket";
     public static final String ALLFLIGHTS = "All-Flights";
     public static final String ROUTES= "Routes";
-    public static final String FIRST = "First";
-    public static final String NEXT= "Next";
-    public static final String PREVIOUS = "Previous";
-    public static final String LAST = "Last";
     public static final String ROUTE = "Route";
 
 

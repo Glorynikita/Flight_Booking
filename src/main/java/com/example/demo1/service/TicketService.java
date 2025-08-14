@@ -1,5 +1,6 @@
 package com.example.demo1.service;
 
+import com.example.demo1.assembler.TicketAssembler;
 import com.example.demo1.dto.requestDto.PassangerDto;
 import com.example.demo1.dto.requestDto.TicketRequestDto;
 import com.example.demo1.dto.requestDto.UserRequestDto;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.demo1.constants.CommonConstants.*;
 import static com.example.demo1.constants.MessageConstants.*;
 
 @Slf4j
@@ -44,7 +44,7 @@ public class TicketService {
                 .orElseThrow(()->new TicketNotFound(NOTFOUND));
 
         Long bookedSeatCount = ticketRepo.countByFlightId(ticket.getFlight().getId());
-        return Mapper.toTicketDto(ticket,  bookedSeatCount);
+        return TicketAssembler.toTicketDto(ticket,  bookedSeatCount);
     }
 
 
@@ -78,7 +78,7 @@ public class TicketService {
             ticket.setFare(fare);
 
             Ticket savedTicket = ticketRepo.save(ticket);
-            bookedTickets.add(Mapper.toTicketDto(savedTicket, bookedSeatCount + bookedTickets.size()));
+            bookedTickets.add(TicketAssembler.toTicketDto(savedTicket, bookedSeatCount + bookedTickets.size()));
         }
 
         return bookedTickets;

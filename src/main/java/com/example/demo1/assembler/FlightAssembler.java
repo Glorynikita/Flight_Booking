@@ -2,14 +2,9 @@ package com.example.demo1.assembler;
 
 import com.example.demo1.controller.FlightController;
 import com.example.demo1.model.Flight;
-import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.example.demo1.constants.CommonConstants.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -27,46 +22,6 @@ public class FlightAssembler implements RepresentationModelAssembler<Flight, Ent
                         .withRel(ALLFLIGHTS).expand());
     }
 
-    public PagedModel<EntityModel<Flight>> toPagedModel(
-            Page<Flight> pageData,
-            String flightNumber,
-            String flightName,
-            Long routeId,
-            int pageNo,
-            int size,
-            String sortBy,
-            String sortDir) {
-
-        List<EntityModel<Flight>> flights = pageData.getContent().stream()
-                .map(this::toModel)
-                .collect(Collectors.toList());
-
-        PagedModel<EntityModel<Flight>> pagedModel = PagedModel.of(
-                flights,
-                new PagedModel.PageMetadata(pageData.getSize(), pageData.getNumber(), pageData.getTotalElements(), pageData.getTotalPages())
-        );
-
-        pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId,
-                pageNo, size, sortBy, sortDir)).withSelfRel().expand());
-
-        pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId, 0,
-                size, sortBy, sortDir)).withRel(FIRST).expand());
-
-        pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId,
-                pageData.getTotalPages() - 1, size, sortBy, sortDir)).withRel(LAST).expand());
-
-        if (pageData.hasPrevious()) {
-            pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId,
-                    pageNo - 1, size, sortBy, sortDir)).withRel(PREVIOUS).expand());
-        }
-
-        if (pageData.hasNext()) {
-            pagedModel.add(linkTo(methodOn(FlightController.class).getAllFlights(flightNumber, flightName, routeId, pageNo + 1,
-                    size, sortBy, sortDir)).withRel(NEXT).expand());
-        }
-
-        return pagedModel;
-    }
 
 }
 

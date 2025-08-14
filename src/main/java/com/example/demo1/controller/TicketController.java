@@ -4,7 +4,7 @@ import com.example.demo1.assembler.TicketAssembler;
 import com.example.demo1.dto.requestDto.TicketRequestDto;
 import com.example.demo1.dto.responseDto.TicketResponseDto;
 import com.example.demo1.service.TicketService;
-import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/tickets")
 public class TicketController {
 
     private final TicketService ticketService;
     private final TicketAssembler ticketAssembler;
-
-    public  TicketController(TicketService ticketService, TicketAssembler ticketAssembler) {
-        this.ticketService = ticketService;
-        this.ticketAssembler = ticketAssembler;
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<TicketResponseDto>> getTicket(@PathVariable Long id){

@@ -1,11 +1,13 @@
 package com.example.demo1.service;
 
+import com.example.demo1.assembler.UserAssembler;
 import com.example.demo1.dto.requestDto.UserRequestDto;
 import com.example.demo1.dto.responseDto.UserResponseDto;
 import com.example.demo1.exception.DuplicateUserException;
 import com.example.demo1.exception.UserNotFoundException;
 import com.example.demo1.mapper.Mapper;
 import com.example.demo1.model.UserProfile;
+import com.example.demo1.repository.TicketRepo;
 import com.example.demo1.repository.UserRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,7 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.example.demo1.constants.CommonConstants.*;
+import static com.example.demo1.constants.CommonConstants.ASC;
+import static com.example.demo1.constants.CommonConstants.LIKE;
 import static com.example.demo1.constants.MessageConstants.*;
 
 @Slf4j
@@ -26,10 +29,12 @@ public class UserService {
 
     private final UserRepo userRepo;
     private final Mapper mapper;
+    private final TicketRepo ticketRepo;
 
-    public UserService(UserRepo userRepo, Mapper mapper) {
+    public UserService(UserRepo userRepo, Mapper mapper, TicketRepo ticketRepo) {
         this.userRepo = userRepo;
         this.mapper = mapper;
+        this.ticketRepo = ticketRepo;
     }
 
     public Page<UserResponseDto> getUsers(String filter, int page, int size, String sortBy, String sortDir) {
@@ -49,7 +54,7 @@ public class UserService {
             return cb.conjunction();
         };
 
-        return userRepo.findAll(spec, pageable).map(Mapper::toUserDto);
+        return userRepo.findAll(spec, pageable).map(UserAssembler::toUserDto);
     }
 
 
@@ -63,7 +68,8 @@ public class UserService {
 
 
     public UserResponseDto getUserById(Long id) {
-        return Mapper.toUserDto(userRepo.findById(id)
+
+        return UserAssembler.toUserDto(userRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException(NOTFOUND)));
     }
 
@@ -72,7 +78,7 @@ public class UserService {
         if (existing.isPresent()) {
             throw new DuplicateUserException(FOUND);
         }
-        return Mapper.toUserDto(userRepo.save(mapper.toUserEntity(dto)));
+        return UserAssembler.toUserDto(userRepo.save(mapper.toUserEntity(dto)));
     }
 
     public UserResponseDto updateUser(Long id, UserRequestDto dto) {
@@ -82,7 +88,7 @@ public class UserService {
         user.setGender(dto.getGender());
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());
-        return Mapper.toUserDto(userRepo.save(user));
+        return UserAssembler.toUserDto(userRepo.save(user));
     }
 
     public String deleteUser(Long id) {
@@ -94,6 +100,13 @@ public class UserService {
             return DELETED;
         }
     }
+
+    public UserResponseDto getUserByTicketId(Long ticketId) {
+        UserProfile user = userRepo.findUserProfileByTicketId(ticketId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return UserAssembler.toUserDto(user);
+    }
+
 
 }
 

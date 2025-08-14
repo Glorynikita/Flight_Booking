@@ -3,22 +3,22 @@ package com.example.demo1.controller;
 import com.example.demo1.assembler.FlightAssembler;
 import com.example.demo1.model.Flight;
 import com.example.demo1.service.FlightService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/flights")
 public class FlightController {
 
     private final FlightService flightService;
     private final FlightAssembler flightAssembler;
+    private final PagedResourcesAssembler<Flight> pagedResourcesAssembler;
 
-    public  FlightController(FlightService flightService, FlightAssembler flightAssembler) {
-        this.flightService = flightService;
-        this.flightAssembler = flightAssembler;
-    }
 
     @GetMapping("/all")
     public PagedModel<EntityModel<Flight>> getAllFlights(
@@ -31,7 +31,7 @@ public class FlightController {
             @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Page<Flight> pages = flightService.getAllflights(flightNumber, flightName, routeId, pageNo, size, sortBy, sortDir);
-        return flightAssembler.toPagedModel(pages, flightNumber, flightName, routeId, pageNo, size, sortBy, sortDir);
+        return pagedResourcesAssembler.toModel(pages, flightAssembler);
     }
 
     @GetMapping("{id}")

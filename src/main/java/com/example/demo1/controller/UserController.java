@@ -5,23 +5,22 @@ import com.example.demo1.dto.requestDto.UserRequestDto;
 import com.example.demo1.dto.responseDto.UserResponseDto;
 import com.example.demo1.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
     private final UserAssembler userAssembler;
-
-    public UserController(UserService userService, UserAssembler userAssembler) {
-        this.userService = userService;
-        this.userAssembler = userAssembler;
-    }
+    private final PagedResourcesAssembler<UserResponseDto> pagedResourcesAssembler;
 
     @GetMapping("/all")
     public PagedModel<EntityModel<UserResponseDto>> getUsers(
@@ -32,7 +31,7 @@ public class UserController {
             @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Page<UserResponseDto> users = userService.getUsers(filter, page, size, sortBy, sortDir);
-        return userAssembler.toPagedModel(users, filter, page, size, sortBy, sortDir);
+        return pagedResourcesAssembler.toModel(users, userAssembler);
     }
 
     @GetMapping("/{id}")
@@ -54,6 +53,13 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         return ResponseEntity.ok(userService.deleteUser(id));
     }
+
+    @GetMapping("/ticket")
+    public EntityModel<UserResponseDto> getUserByTicketId(@RequestParam Long ticketId) {
+        return userAssembler.toModel(userService.getUserByTicketId(ticketId));
+    }
+
+
 }
 
 

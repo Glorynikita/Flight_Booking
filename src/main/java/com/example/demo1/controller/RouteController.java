@@ -1,9 +1,12 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.assembler.RouteAssembler;
+import com.example.demo1.dto.responseDto.TicketResponseDto;
 import com.example.demo1.model.Route;
 import com.example.demo1.service.RouteService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.*;
@@ -11,16 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/routes")
 public class RouteController {
 
     private final RouteService routeService;
     private final RouteAssembler routeAssembler;
-
-    public  RouteController(RouteService routeService, RouteAssembler routeAssembler) {
-        this.routeService = routeService;
-        this.routeAssembler = routeAssembler;
-    }
+    private final PagedResourcesAssembler<Route> pagedResourcesAssembler;
 
     @GetMapping("/all")
     public PagedModel<EntityModel<Route>> getAllRoutes(
@@ -35,7 +35,7 @@ public class RouteController {
             @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Page<Route> page = routeService.getAllRoutes(source, destination, departureTime, arrivalTime, travelDate, pageNo, size, sortBy, sortDir);
-        return routeAssembler.toPagedModel(page, source, destination, departureTime, arrivalTime, travelDate, pageNo, size, sortBy, sortDir);
+        return pagedResourcesAssembler.toModel(page, routeAssembler);
     }
 
     @GetMapping("/{id}")

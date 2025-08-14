@@ -3,8 +3,6 @@ package com.example.demo1.mapper;
 import com.example.demo1.dto.requestDto.PassangerDto;
 import com.example.demo1.dto.requestDto.TicketRequestDto;
 import com.example.demo1.dto.requestDto.UserRequestDto;
-import com.example.demo1.dto.responseDto.TicketResponseDto;
-import com.example.demo1.dto.responseDto.UserResponseDto;
 import com.example.demo1.model.Flight;
 import com.example.demo1.model.Ticket;
 import com.example.demo1.model.UserProfile;
@@ -35,17 +33,6 @@ public class Mapper {
                 .build();
     }
 
-    public static UserResponseDto toUserDto(UserProfile userProfile) {
-        return UserResponseDto.builder()
-                .userId(userProfile.getUserId())
-                .name(userProfile.getName())
-                .gender(userProfile.getGender())
-                .phone(userProfile.getPhone())
-                .email(userProfile.getEmail())
-                .build();
-    }
-
-
     public static Ticket toTicketEntity(PassangerDto passangerDto, TicketRequestDto dto, Flight flight, UserProfile user) {
         return Ticket.builder()
                 .passangerName(passangerDto.getName())
@@ -57,26 +44,6 @@ public class Mapper {
                 .status(CONFIRM)
                 .flight(flight)
                 .userProfile(user)
-                .build();
-    }
-
-    public static TicketResponseDto toTicketDto(Ticket ticket, Long bookedSeatCount) {
-        Long availableSeats = ticket.getFlight().getTotalSeats() - bookedSeatCount;
-        return TicketResponseDto.builder()
-                .id(ticket.getId())
-                .name(ticket.getPassangerName())
-                .gender(ticket.getUserProfile().getGender())
-                .flightNumber(ticket.getFlight().getId())
-                .flightName(ticket.getFlight().getFlightName())
-                .source(ticket.getSource())
-                .destination(ticket.getDestination())
-                .departureTime(ticket.getFlight().getRoute().getDepartureTime())
-                .arrivalTime(ticket.getFlight().getRoute().getArrivalTime())
-                .travelDate(ticket.getFlight().getRoute().getTravelDate())
-                .seat(ticket.getSeat())
-                .travelClass(ticket.getTravelClass())
-                .fare(ticket.getFare())
-                .availableSeats(availableSeats)
                 .build();
     }
 
