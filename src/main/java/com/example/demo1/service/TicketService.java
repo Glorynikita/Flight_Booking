@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.demo1.constants.MessageConstants.*;
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Slf4j
 @Service
@@ -107,4 +108,7 @@ public class TicketService {
         }
     }
 
+    public List<Ticket> getTicketByFlightId(Long flightId) {
+        return ticketRepo.findByFlightId(flightId);
+    }
 }

@@ -6,6 +6,7 @@ import com.example.demo1.dto.responseDto.UserResponseDto;
 import com.example.demo1.exception.DuplicateUserException;
 import com.example.demo1.exception.UserNotFoundException;
 import com.example.demo1.mapper.Mapper;
+import com.example.demo1.model.SeatClass;
 import com.example.demo1.model.UserProfile;
 import com.example.demo1.repository.TicketRepo;
 import com.example.demo1.repository.UserRepo;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.demo1.constants.CommonConstants.ASC;
@@ -108,6 +110,17 @@ public class UserService {
     }
 
 
+    public List<UserResponseDto> findByGender(String gender) {
+        return userRepo.findByGenderIgnoreCase(gender);
+    }
+
+    public List<UserProfile> getUserByTravelClass(SeatClass travelClass) {
+        return userRepo.findByTravelClass(travelClass);
+    }
+
+    public List<UserProfile> getUserByFare(String fare) {
+        return userRepo.findByFare(fare);
+    }
 }
 
 

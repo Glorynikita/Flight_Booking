@@ -1,5 +1,6 @@
 package com.example.demo1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,7 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private UserProfile userProfile;
 
     @ManyToOne

@@ -3,6 +3,7 @@ package com.example.demo1.controller;
 import com.example.demo1.assembler.TicketAssembler;
 import com.example.demo1.dto.requestDto.TicketRequestDto;
 import com.example.demo1.dto.responseDto.TicketResponseDto;
+import com.example.demo1.model.Ticket;
 import com.example.demo1.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
@@ -35,6 +36,11 @@ public class TicketController {
     @DeleteMapping("/{id}")
     public String deleteTicket(@PathVariable Long id) {
         return ticketService.deleteTicket(id);
+    }
+
+    @GetMapping("/ticket/{flightId}")
+    public List<Ticket> getTicketByFlight(@PathVariable Long flightId) {
+        return ticketService.getTicketByFlightId(flightId);
     }
 
 

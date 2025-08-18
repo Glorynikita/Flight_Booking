@@ -1,5 +1,6 @@
 package com.example.demo1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,7 @@ public class UserProfile {
     private String password;
 
     @OneToMany(mappedBy = "userProfile")
+    @JsonIgnore
     private Collection<Ticket> ticket;
 
 
