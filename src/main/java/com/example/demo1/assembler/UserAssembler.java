@@ -1,6 +1,6 @@
 package com.example.demo1.assembler;
 
-import com.example.demo1.controller.UserController;
+import com.example.demo1.controller.UserProfileController;
 import com.example.demo1.dto.responseDto.UserResponseDto;
 import com.example.demo1.model.UserProfile;
 import org.springframework.hateoas.EntityModel;
@@ -17,11 +17,11 @@ public class UserAssembler implements RepresentationModelAssembler<UserResponseD
     @Override
     public EntityModel<UserResponseDto> toModel(UserResponseDto dto) {
         return EntityModel.of(dto,
-                linkTo(methodOn(UserController.class).getUserById(dto.getUserId())).withSelfRel(),
-                linkTo(UserController.class).slash(USERS).withRel(ALLUSER),
-                linkTo(UserController.class).slash(ADD).withRel(ADDUSER).withType(POST),
-                linkTo(UserController.class).slash(UPDATE).withRel(UPUSER).withType(PUT),
-                linkTo(UserController.class).slash(dto.getUserId()).withRel(DELETEUSER).withType(DELETE)
+                linkTo(methodOn(UserProfileController.class).getUserById(dto.getUserId())).withSelfRel(),
+                linkTo(UserProfileController.class).slash(USERS).withRel(ALLUSER),
+                linkTo(UserProfileController.class).slash(ADD).withRel(ADDUSER).withType(POST),
+                linkTo(UserProfileController.class).slash(UPDATE).withRel(UPUSER).withType(PUT),
+                linkTo(UserProfileController.class).slash(dto.getUserId()).withRel(DELETEUSER).withType(DELETE)
         );
     }
 

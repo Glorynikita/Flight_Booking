@@ -22,4 +22,5 @@ public class UserRequestDto {
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$",
             message = "Password must be at least 8 characters long, contain one uppercase, one lowercase, one digit, and one special character")
     private String password;
+
 }

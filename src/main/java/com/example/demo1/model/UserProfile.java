@@ -31,6 +31,7 @@ public class UserProfile {
     @Column(nullable = false)
     private String email;
     private String password;
+    private String role;
 
     @OneToMany(mappedBy = "userProfile")
     @JsonIgnore

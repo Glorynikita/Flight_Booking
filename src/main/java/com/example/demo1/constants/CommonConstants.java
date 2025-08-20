@@ -18,6 +18,7 @@ public class CommonConstants {
     public static final String ALLFLIGHTS = "All-Flights";
     public static final String ROUTES= "Routes";
     public static final String ROUTE = "Route";
+    public static final String USER = "USER";
 
 
 }

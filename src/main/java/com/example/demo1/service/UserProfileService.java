@@ -9,13 +9,15 @@ import com.example.demo1.mapper.Mapper;
 import com.example.demo1.model.SeatClass;
 import com.example.demo1.model.UserProfile;
 import com.example.demo1.repository.TicketRepo;
-import com.example.demo1.repository.UserRepo;
+import com.example.demo1.repository.UserProfileRepo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,18 +28,14 @@ import static com.example.demo1.constants.CommonConstants.LIKE;
 import static com.example.demo1.constants.MessageConstants.*;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
-public class UserService {
+public class UserProfileService {
 
-    private final UserRepo userRepo;
+    private final UserProfileRepo userProfileRepo;
     private final Mapper mapper;
     private final TicketRepo ticketRepo;
-
-    public UserService(UserRepo userRepo, Mapper mapper, TicketRepo ticketRepo) {
-        this.userRepo = userRepo;
-        this.mapper = mapper;
-        this.ticketRepo = ticketRepo;
-    }
+    private final BCryptPasswordEncoder PasswordEncoder;
 
     public Page<UserResponseDto> getUsers(String filter, int page, int size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(ASC) ?
@@ -56,7 +54,7 @@ public class UserService {
             return cb.conjunction();
         };
 
-        return userRepo.findAll(spec, pageable).map(UserAssembler::toUserDto);
+        return userProfileRepo.findAll(spec, pageable).map(UserAssembler::toUserDto);
     }
 
 
@@ -71,55 +69,56 @@ public class UserService {
 
     public UserResponseDto getUserById(Long id) {
 
-        return UserAssembler.toUserDto(userRepo.findById(id)
+        return UserAssembler.toUserDto(userProfileRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException(NOTFOUND)));
     }
 
     public UserResponseDto addUser(UserRequestDto dto) {
-        Optional<UserProfile> existing = userRepo.findByEmailAndPhone(dto.getEmail(), dto.getPhone());
+        Optional<UserProfile> existing = userProfileRepo.findByEmailAndPhone(dto.getEmail(), dto.getPhone());
         if (existing.isPresent()) {
             throw new DuplicateUserException(FOUND);
         }
-        return UserAssembler.toUserDto(userRepo.save(mapper.toUserEntity(dto)));
+        UserProfile userEntity = mapper.toUserEntity(dto);
+        userEntity.setPassword(PasswordEncoder.encode(dto.getPassword()));
+        return UserAssembler.toUserDto(userProfileRepo.save(userEntity));
     }
 
     public UserResponseDto updateUser(Long id, UserRequestDto dto) {
-        UserProfile user = userRepo.findById(id)
+        UserProfile user = userProfileRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException(NOTFOUND));
         user.setName(dto.getName());
         user.setGender(dto.getGender());
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());
-        return UserAssembler.toUserDto(userRepo.save(user));
+        return UserAssembler.toUserDto(userProfileRepo.save(user));
     }
 
     public String deleteUser(Long id) {
-        if(!userRepo.existsById(id)) {
+        if(!userProfileRepo.existsById(id)) {
             throw new UserNotFoundException(NOTFOUND);
         }
         else {
-            userRepo.deleteById(id);
+            userProfileRepo.deleteById(id);
             return DELETED;
         }
     }
 
     public UserResponseDto getUserByTicketId(Long ticketId) {
-        UserProfile user = userRepo.findUserProfileByTicketId(ticketId)
+        UserProfile user = userProfileRepo.findUserProfileByTicketId(ticketId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return UserAssembler.toUserDto(user);
     }
 
-
     public List<UserResponseDto> findByGender(String gender) {
-        return userRepo.findByGenderIgnoreCase(gender);
+        return userProfileRepo.findByGenderIgnoreCase(gender);
     }
 
     public List<UserProfile> getUserByTravelClass(SeatClass travelClass) {
-        return userRepo.findByTravelClass(travelClass);
+        return userProfileRepo.findByTravelClass(travelClass);
     }
 
     public List<UserProfile> getUserByFare(String fare) {
-        return userRepo.findByFare(fare);
+        return userProfileRepo.findByFare(fare);
     }
 }
 

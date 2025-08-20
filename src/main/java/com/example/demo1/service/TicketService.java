@@ -14,8 +14,9 @@ import com.example.demo1.model.Ticket;
 import com.example.demo1.model.UserProfile;
 import com.example.demo1.repository.FlightRepo;
 import com.example.demo1.repository.TicketRepo;
-import com.example.demo1.repository.UserRepo;
+import com.example.demo1.repository.UserProfileRepo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,20 +24,21 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.demo1.constants.MessageConstants.*;
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Slf4j
 @Service
 public class TicketService {
 
     private final TicketRepo ticketRepo;
-    private final UserRepo userRepo;
+    private final UserProfileRepo userProfileRepo;
     private final FlightRepo flightRepo;
+    private final BCryptPasswordEncoder PasswordEncoder;
 
-    public TicketService(TicketRepo ticketRepo, UserRepo userRepo, FlightRepo flightRepo) {
+    public TicketService(TicketRepo ticketRepo, UserProfileRepo userProfileRepo, FlightRepo flightRepo, BCryptPasswordEncoder passwordEncoder) {
         this.ticketRepo = ticketRepo;
-        this.userRepo = userRepo;
+        this.userProfileRepo = userProfileRepo;
         this.flightRepo = flightRepo;
+        PasswordEncoder = passwordEncoder;
     }
 
     public TicketResponseDto getTicketById(Long id) {
@@ -56,18 +58,18 @@ public class TicketService {
 
         UserRequestDto userRequestDto = dto.getUser();
 
-        // Login validation
-        userRepo.findByEmailAndPassword(userRequestDto.getEmail(), userRequestDto.getPassword())
-                .orElseThrow(() -> new InvalidUserException(INVALID));
+//        // Login validation
+//        userProfileRepo.findByEmailAndPassword(userRequestDto.getEmail(), userRequestDto.getPassword())
+//                .orElseThrow(() -> new InvalidUserException(INVALID));
 
         // Duplicate sign in check
-        Optional<UserProfile> userOpt = userRepo.findByEmailAndPhone(
+        Optional<UserProfile> userOpt = userProfileRepo.findByEmailAndPhone(
                 dto.getUser().getEmail(), dto.getUser().getPhone());
 
-        UserProfile user = userOpt.orElseGet(() -> userRepo.save(
+        UserProfile user = userOpt.orElseGet(() -> userProfileRepo.save(
                 new UserProfile(null, dto.getUser().getName(),
                         dto.getUser().getGender(), dto.getUser().getPhone(), dto.getUser().getEmail(),
-                        dto.getUser().getPassword(), null)));
+                        PasswordEncoder.encode(dto.getUser().getPassword()),"USER", null)));
 
         Long bookedSeatCount = ticketRepo.countByFlightId(flight.getId());
 

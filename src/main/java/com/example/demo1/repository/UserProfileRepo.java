@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepo extends JpaRepository<UserProfile, Long> , JpaSpecificationExecutor<UserProfile> {
+public interface UserProfileRepo extends JpaRepository<UserProfile, Long> , JpaSpecificationExecutor<UserProfile> {
 
 
     // to validate duplicate entries for user
@@ -34,6 +34,5 @@ public interface UserRepo extends JpaRepository<UserProfile, Long> , JpaSpecific
     List<UserProfile> findByFare(String fare);
 
 
-
-
+    Optional<UserProfile> findByName(String name);
 }
