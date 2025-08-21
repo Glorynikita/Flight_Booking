@@ -30,11 +30,11 @@ public class JWTService {
                 .claims()
                 .add(claims)
                 .subject(username)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .issuedAt(new Date(System.currentTimeMillis())) //created DateTime
+                .expiration(new Date(System.currentTimeMillis() + expiration)) //expire DateTime
                 .and()
-                .signWith(getKey())
-                .compact();
+                .signWith(getKey()) //sign with secret key
+                .compact(); //this builds final token
     }
 
     private SecretKey getKey() {
