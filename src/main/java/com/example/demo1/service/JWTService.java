@@ -20,8 +20,11 @@ public class JWTService {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration}")
+    @Value("${jwt.expiration}")   //30 min
     private Long expiration;
+
+    @Value("${jwt.refresh_expiration}")   //1 day
+    private Long refresh_expiration;
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
@@ -35,6 +38,15 @@ public class JWTService {
                 .and()
                 .signWith(getKey()) //sign with secret key
                 .compact(); //this builds final token
+    }
+
+    public String generateRefreshToken(String username) {
+        return Jwts.builder()
+                .subject(username)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + refresh_expiration))
+                .signWith(getKey())
+                .compact();
     }
 
     private SecretKey getKey() {
@@ -70,5 +82,10 @@ public class JWTService {
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public boolean validateRefreshToken(String token, String username) {
+        String extracted = extractName(token);
+        return extracted.equals(username) && !isTokenExpired(token);
     }
 }
