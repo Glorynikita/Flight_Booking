@@ -6,5 +6,10 @@ public class MessageConstants {
     public static final String DELETED="Deleted successfully";
     public static final String CANCEL = "Cancelled successfully";
     public static final String NOTFOUND="Not found";
-    public static final String INVALID="Invalid email or password";
+    public static final String INVALID="Invalid userName or password";
+    public static final String INVALID_PASSWORD="Invalid password";
+    public static final String BOOKED = "Ticket Booked";
+    public static final String TOKEN_EXPIRED = "Token expired. Please login again.";
+    public static final String INVALID_TOKEN = "Invalid token";
+
 }

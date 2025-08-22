@@ -20,5 +20,7 @@ public class CommonConstants {
     public static final String ROUTE = "Route";
     public static final String USER = "USER";
 
+    public static final String TOPIC ="ticket-topic";
+
 
 }

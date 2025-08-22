@@ -17,6 +17,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static com.example.demo1.constants.MessageConstants.*;
+
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
@@ -47,15 +49,15 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token expired. Please login again.");
+            response.getWriter().write(TOKEN_EXPIRED);
             return;
         } catch (io.jsonwebtoken.SignatureException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid token");
+            response.getWriter().write(INVALID_TOKEN);
             return;
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid token.");
+            response.getWriter().write(INVALID_TOKEN);
             return;
         }
         filterChain.doFilter(request, response);
