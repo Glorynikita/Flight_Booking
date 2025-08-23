@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: demo1
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 123456
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  security:
+    user:
+      name: niki
+      password: 1234
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: ticket-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+jwt:
+  secret: NTJjYzY5YjAtYTk2Mi00Y2U4LThhN2ItM2E0ODZmZjE5Yzc3Njc0NzI2ZTctZTc3
+  expiration: 1800000
+  refresh_expiration: 86400000
