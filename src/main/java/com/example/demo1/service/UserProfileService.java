@@ -103,7 +103,7 @@ public class UserProfileService {
 
     public UserResponseDto getUserByTicketId(Long ticketId) {
         UserProfile user = userProfileRepo.findUserProfileByTicketId(ticketId)
-                .orElseThrow(() -> new RuntimeException(NOUSER));
+                .orElseThrow(() -> new RuntimeException(NO_USER));
         return UserAssembler.toUserDto(user);
     }
 
