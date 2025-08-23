@@ -8,7 +8,6 @@ import com.example.demo1.exception.UserNotFoundException;
 import com.example.demo1.mapper.Mapper;
 import com.example.demo1.model.SeatClass;
 import com.example.demo1.model.UserProfile;
-import com.example.demo1.repository.TicketRepo;
 import com.example.demo1.repository.UserProfileRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +33,6 @@ public class UserProfileService {
 
     private final UserProfileRepo userProfileRepo;
     private final Mapper mapper;
-    private final TicketRepo ticketRepo;
     private final BCryptPasswordEncoder PasswordEncoder;
 
     public Page<UserResponseDto> getUsers(String filter, int page, int size, String sortBy, String sortDir) {
@@ -105,7 +103,7 @@ public class UserProfileService {
 
     public UserResponseDto getUserByTicketId(Long ticketId) {
         UserProfile user = userProfileRepo.findUserProfileByTicketId(ticketId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(NOUSER));
         return UserAssembler.toUserDto(user);
     }
 
