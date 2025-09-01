@@ -1,7 +1,6 @@
 package com.example.demo1.controller;
 
 import com.example.demo1.assembler.RouteAssembler;
-import com.example.demo1.dto.responseDto.TicketResponseDto;
 import com.example.demo1.model.Route;
 import com.example.demo1.service.RouteService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +11,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,8 +39,8 @@ public class RouteController {
     }
 
     @GetMapping("/{id}")
-    public EntityModel<Route> getRouteById(@PathVariable Long id) {
-        return routeAssembler.toModel(routeService.getRouteById(id));
+    public EntityModel<Route> getRouteById(@PathVariable Long id, Locale locale) {
+        return routeAssembler.toModel(routeService.getRouteById(id,locale));
     }
 
     @PostMapping("/add")
@@ -49,12 +49,12 @@ public class RouteController {
     }
 
     @PutMapping("/{id}")
-    public EntityModel<Route> updateRoute(@PathVariable Long id, @RequestBody Route route) {
-        return routeAssembler.toModel(routeService.updateRoute(id, route));
+    public EntityModel<Route> updateRoute(@PathVariable Long id, @RequestBody Route route, Locale locale) {
+        return routeAssembler.toModel(routeService.updateRoute(id, route, locale));
     }
 
     @DeleteMapping("/{id}")
-    public String deleteRoute(@PathVariable Long id) {
-        return routeService.deleteRoute(id);
+    public String deleteRoute(@PathVariable Long id, Locale locale) {
+        return routeService.deleteRoute(id, locale);
     }
 }

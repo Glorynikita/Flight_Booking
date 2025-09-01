@@ -16,7 +16,7 @@ public class RouteAssembler implements RepresentationModelAssembler<Route, Entit
     @Override
     public EntityModel<Route> toModel(Route route) {
         return EntityModel.of(route,
-                linkTo(methodOn(RouteController.class).getRouteById(route.getId())).withSelfRel(),
+                linkTo(methodOn(RouteController.class).getRouteById(route.getId(), null)).withSelfRel(),
                 linkTo(methodOn(RouteController.class)
                         .getAllRoutes(null, null, null, null,
                         null, 0, 10, ID, ASC)).withRel(ROUTES).expand());

@@ -10,6 +10,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/flights")
@@ -35,8 +37,8 @@ public class FlightController {
     }
 
     @GetMapping("{id}")
-    public EntityModel<Flight> getFlightById(@PathVariable Long id) {
-        return flightAssembler.toModel(flightService.getFlightById(id));
+    public EntityModel<Flight> getFlightById(@PathVariable Long id , Locale locale) {
+        return flightAssembler.toModel(flightService.getFlightById(id,locale));
     }
 
     @PostMapping("/add")
@@ -45,13 +47,13 @@ public class FlightController {
     }
 
     @PutMapping("/{id}")
-    public EntityModel<Flight> updateFlight(@PathVariable Long id, @RequestBody Flight flight) {
-        return flightAssembler.toModel(flightService.updateFlight(id, flight));
+    public EntityModel<Flight> updateFlight(@PathVariable Long id, @RequestBody Flight flight, Locale locale) {
+        return flightAssembler.toModel(flightService.updateFlight(id, flight, locale));
     }
 
     @DeleteMapping("/{id}")
-    public String deleteFlightById(@PathVariable Long id) {
-        return flightService.deleteFlightById(id);
+    public String deleteFlightById(@PathVariable Long id, Locale locale) {
+        return flightService.deleteFlightById(id, locale);
 
     }
 }

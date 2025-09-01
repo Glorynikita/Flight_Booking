@@ -32,6 +32,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/users/add","/home/**").permitAll()
                         .requestMatchers("/routes/**","/flights/**").hasRole("ADMIN")
                         .requestMatchers("/tickets/**","/routes/all","/flights/all").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/payment/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

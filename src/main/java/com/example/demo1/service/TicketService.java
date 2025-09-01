@@ -5,7 +5,6 @@ import com.example.demo1.dto.requestDto.PassangerDto;
 import com.example.demo1.dto.requestDto.TicketRequestDto;
 import com.example.demo1.dto.requestDto.UserRequestDto;
 import com.example.demo1.dto.responseDto.TicketResponseDto;
-import com.example.demo1.exception.InvalidUserException;
 import com.example.demo1.exception.TicketNotFound;
 import com.example.demo1.mapper.Mapper;
 import com.example.demo1.model.Flight;
@@ -15,36 +14,32 @@ import com.example.demo1.model.UserProfile;
 import com.example.demo1.repository.FlightRepo;
 import com.example.demo1.repository.TicketRepo;
 import com.example.demo1.repository.UserProfileRepo;
+import com.example.demo1.translator.Translator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
-
-import static com.example.demo1.constants.MessageConstants.*;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TicketService {
 
     private final TicketRepo ticketRepo;
     private final UserProfileRepo userProfileRepo;
     private final FlightRepo flightRepo;
     private final BCryptPasswordEncoder PasswordEncoder;
+    private final Translator translator;
 
-    public TicketService(TicketRepo ticketRepo, UserProfileRepo userProfileRepo, FlightRepo flightRepo, BCryptPasswordEncoder passwordEncoder) {
-        this.ticketRepo = ticketRepo;
-        this.userProfileRepo = userProfileRepo;
-        this.flightRepo = flightRepo;
-        PasswordEncoder = passwordEncoder;
-    }
-
-    public TicketResponseDto getTicketById(Long id) {
+    public TicketResponseDto getTicketById(Long id, Locale locale) {
         log.info("Ticket Details");
         Ticket ticket = ticketRepo.findById(id)
-                .orElseThrow(()->new TicketNotFound(NOTFOUND));
+                .orElseThrow(()->new TicketNotFound(translator.toLocale("ticket.not.found",locale)));
 
         Long bookedSeatCount = ticketRepo.countByFlightId(ticket.getFlight().getId());
         return TicketAssembler.toTicketDto(ticket,  bookedSeatCount);
@@ -52,9 +47,9 @@ public class TicketService {
 
 
 
-    public List<TicketResponseDto> bookTicket(TicketRequestDto dto) {
+    public List<TicketResponseDto> bookTicket(TicketRequestDto dto, Locale locale) {
         Flight flight = flightRepo.findById(dto.getFlightNumber())
-                .orElseThrow(() -> new RuntimeException(NOTFOUND));
+                .orElseThrow(() -> new RuntimeException(translator.toLocale("ticket.not.found",locale)));
 
         UserRequestDto userRequestDto = dto.getUser();
 
@@ -87,13 +82,13 @@ public class TicketService {
         return bookedTickets;
     }
 
-    public String deleteTicket(Long id) {
+    public String deleteTicket(Long id, Locale locale) {
         if (!ticketRepo.existsById(id)) {
-            throw new RuntimeException(NOTFOUND);
+            throw new RuntimeException(translator.toLocale("ticket.not.found",locale));
         }
         else {
             ticketRepo.deleteById(id);
-            return CANCEL;
+            return translator.toLocale("cancel",locale);
         }
 
     }

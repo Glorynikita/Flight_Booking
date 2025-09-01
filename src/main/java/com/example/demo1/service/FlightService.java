@@ -3,6 +3,8 @@ package com.example.demo1.service;
 import com.example.demo1.Specification.FlightSpecification;
 import com.example.demo1.model.Flight;
 import com.example.demo1.repository.FlightRepo;
+import com.example.demo1.translator.Translator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,20 +12,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import static com.example.demo1.constants.CommonConstants.*;
-import static com.example.demo1.constants.MessageConstants.DELETED;
-import static com.example.demo1.constants.MessageConstants.NOTFOUND;
+import java.util.Locale;
+
+import static com.example.demo1.constants.CommonConstants.ASC;
 
 @Service
+@RequiredArgsConstructor
 public class FlightService {
 
     private final FlightRepo flightRepo;
     private final FlightSpecification flightSpecification;
-
-    public  FlightService(FlightRepo flightRepo, FlightSpecification flightSpecification) {
-        this.flightRepo = flightRepo;
-        this.flightSpecification = flightSpecification;
-    }
+    private final Translator translator;
 
     public Page<Flight> getAllflights(String flightNumber, String flightName, Long routeId, int pageNo, int size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(ASC) ?
@@ -45,31 +44,31 @@ public class FlightService {
         return flightRepo.findAll(spec, pageable);
     }
 
-    public Flight getFlightById(Long id) {
+    public Flight getFlightById(Long id, Locale locale) {
         return flightRepo.findById(id)
-                .orElseThrow(()-> new RuntimeException(NOTFOUND));
+                .orElseThrow(()-> new RuntimeException(translator.toLocale("flight.not.found", locale)));
     }
 
     public Flight addFlight(Flight flight) {
         return flightRepo.save(flight);
     }
 
-    public Flight updateFlight(Long id, Flight flight) {
+    public Flight updateFlight(Long id, Flight flight, Locale locale) {
         Flight existing =flightRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException(NOTFOUND));
+                .orElseThrow(() -> new RuntimeException(translator.toLocale("flight.not.found", locale)));
         existing.setFlightNumber(flight.getFlightNumber());
         existing.setFlightName(flight.getFlightName());
         existing.setRoute(flight.getRoute());
         return flightRepo.save(existing);
     }
 
-    public String deleteFlightById(Long id) {
+    public String deleteFlightById(Long id, Locale locale) {
         if (!flightRepo.existsById(id)) {
-            throw new RuntimeException(NOTFOUND);
+            throw new RuntimeException(translator.toLocale("flight.not.found", locale));
         }
         else {
             flightRepo.deleteById(id);
-            return DELETED;
+            return translator.toLocale("deleted", locale);
         }
     }
 }

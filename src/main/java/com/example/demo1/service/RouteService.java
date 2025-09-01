@@ -3,6 +3,8 @@ package com.example.demo1.service;
 import com.example.demo1.Specification.RouteSpecification;
 import com.example.demo1.model.Route;
 import com.example.demo1.repository.RouteRepo;
+import com.example.demo1.translator.Translator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,12 +13,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Locale;
 
-import static com.example.demo1.constants.CommonConstants.*;
-import static com.example.demo1.constants.MessageConstants.DELETED;
-import static com.example.demo1.constants.MessageConstants.NOTFOUND;
+import static com.example.demo1.constants.CommonConstants.ASC;
 
 @Service
+@RequiredArgsConstructor
 public class RouteService {
 
 /*    field injection
@@ -26,14 +28,11 @@ public class RouteService {
     @Autowired
     private RouteSpecification routeSpecification;*/
 
-    //constructor injection
     private final RouteRepo routeRepo;
     private final RouteSpecification routeSpecification;
+    private final Translator translator;
 
-    public  RouteService(RouteRepo routeRepo, RouteSpecification routeSpecification) {
-        this.routeRepo = routeRepo;
-        this.routeSpecification = routeSpecification;
-    }
+
 
     public Page<Route> getAllRoutes(String source, String destination, String departureTime, String arrivalTime, LocalDate travelDate, int pageNo, int size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(ASC) ?
@@ -61,18 +60,18 @@ public class RouteService {
         return routeRepo.findAll(spec, pageable);
     }
 
-    public Route getRouteById(Long id) {
+    public Route getRouteById(Long id, Locale locale) {
         return routeRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException(NOTFOUND));
+                .orElseThrow(() -> new RuntimeException(translator.toLocale("route.not.found", locale)));
     }
 
     public Route addRoute(Route route) {
         return routeRepo.save(route);
     }
 
-    public Route updateRoute(Long id, Route route) {
+    public Route updateRoute(Long id, Route route, Locale locale) {
         Route existing = routeRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException(NOTFOUND));
+                .orElseThrow(() -> new RuntimeException(translator.toLocale("route.not.found", locale)));
         existing.setSource(route.getSource());
         existing.setDestination(route.getDestination());
         existing.setDepartureTime(route.getDepartureTime());
@@ -81,13 +80,13 @@ public class RouteService {
         return routeRepo.save(existing);
     }
 
-    public String deleteRoute(Long id) {
+    public String deleteRoute(Long id, Locale locale) {
         if (!routeRepo.existsById(id)) {
-            throw new RuntimeException(NOTFOUND);
+            throw new RuntimeException(translator.toLocale("route.not.found", locale));
         }
         else {
             routeRepo.deleteById(id);
-            return DELETED;
+            return translator.toLocale("deleted", locale);
         }
     }
 }

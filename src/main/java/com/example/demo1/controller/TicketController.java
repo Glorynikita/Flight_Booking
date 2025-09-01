@@ -6,6 +6,7 @@ import com.example.demo1.dto.responseDto.TicketResponseDto;
 import com.example.demo1.kafka.Producer;
 import com.example.demo1.model.Ticket;
 import com.example.demo1.service.TicketService;
+import com.example.demo1.translator.Translator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -13,8 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static com.example.demo1.constants.MessageConstants.BOOKED;
+import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,22 +24,23 @@ public class TicketController {
     private final TicketService ticketService;
     private final TicketAssembler ticketAssembler;
     private final Producer producer;
+    private final Translator translator;
 
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<TicketResponseDto>> getTicket(@PathVariable Long id){
-        TicketResponseDto ticketResponseDto = ticketService.getTicketById(id);
+    public ResponseEntity<EntityModel<TicketResponseDto>> getTicket(@PathVariable Long id, Locale locale) {
+        TicketResponseDto ticketResponseDto = ticketService.getTicketById(id, locale);
         return ResponseEntity.ok(ticketAssembler.toModel(ticketResponseDto));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<List<TicketResponseDto>> bookTicket(@RequestBody TicketRequestDto dto) {
-        List<TicketResponseDto> response = ticketService.bookTicket(dto);
+    public ResponseEntity<List<TicketResponseDto>> bookTicket(@RequestBody TicketRequestDto dto, Locale locale) {
+        List<TicketResponseDto> response = ticketService.bookTicket(dto,locale);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteTicket(@PathVariable Long id) {
-        return ticketService.deleteTicket(id);
+    public String deleteTicket(@PathVariable Long id, Locale locale) {
+        return ticketService.deleteTicket(id,locale);
     }
 
     @GetMapping("/ticket/{flightId}")
@@ -48,10 +49,10 @@ public class TicketController {
     }
 
     @PostMapping("/book")
-    public String bookTicket(@RequestParam String name, @RequestParam String flightNumber) {
+    public String bookTicket(@RequestParam String name, @RequestParam String flightNumber,Locale locale) {
         String message = "Passanger Name : " + name + "| Flight Number : " + flightNumber;
         producer.sendMessage(message);
-        return BOOKED;
+        return translator.toLocale("booked", locale);
     }
 
 }

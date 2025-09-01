@@ -24,7 +24,9 @@ public class Ticket {
     private String source;
     private String destination;
     private String fare;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private  BookingStatus bookingStatus;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

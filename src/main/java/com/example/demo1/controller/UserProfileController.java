@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,29 +40,28 @@ public class UserProfileController {
     }
 
     @GetMapping("/{id}")
-    public EntityModel<UserResponseDto> getUserById(@PathVariable Long id) {
-        return userAssembler.toModel(userProfileService.getUserById(id));
+    public EntityModel<UserResponseDto> getUserById(@PathVariable Long id, Locale locale) {
+        return userAssembler.toModel(userProfileService.getUserById(id, locale));
     }
 
     @PostMapping("/add")
-    public EntityModel<UserResponseDto> addUser(@Valid @RequestBody UserRequestDto dto) {
-
-        return userAssembler.toModel(userProfileService.addUser(dto));
+    public EntityModel<UserResponseDto> addUser(@Valid @RequestBody UserRequestDto dto, Locale locale) {
+        return userAssembler.toModel(userProfileService.addUser(dto, locale));
     }
 
     @PutMapping("/{id}")
-    public EntityModel<UserResponseDto> updateUser(@PathVariable Long id,@Valid @RequestBody UserRequestDto dto) {
-        return userAssembler.toModel(userProfileService.updateUser(id, dto));
+    public EntityModel<UserResponseDto> updateUser(@PathVariable Long id,@Valid @RequestBody UserRequestDto dto, Locale locale) {
+        return userAssembler.toModel(userProfileService.updateUser(id, dto, locale));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
-        return ResponseEntity.ok(userProfileService.deleteUser(id));
+    public ResponseEntity<String> deleteUser(@PathVariable Long id, Locale locale) {
+        return ResponseEntity.ok(userProfileService.deleteUser(id, locale));
     }
 
     @GetMapping("/ticket")
-    public EntityModel<UserResponseDto> getUserByTicketId(@RequestParam Long ticketId) {
-        return userAssembler.toModel(userProfileService.getUserByTicketId(ticketId));
+    public EntityModel<UserResponseDto> getUserByTicketId(@RequestParam Long ticketId, Locale locale) {
+        return userAssembler.toModel(userProfileService.getUserByTicketId(ticketId, locale));
     }
 
     @GetMapping("/by-gender/{gender}")
@@ -78,8 +78,6 @@ public class UserProfileController {
     public List<UserProfile> getUserByFare(@PathVariable String fare) {
         return userProfileService.getUserByFare(fare);
     }
-
-
 
 }
 

@@ -3,6 +3,7 @@ package com.example.demo1.mapper;
 import com.example.demo1.dto.requestDto.PassangerDto;
 import com.example.demo1.dto.requestDto.TicketRequestDto;
 import com.example.demo1.dto.requestDto.UserRequestDto;
+import com.example.demo1.model.BookingStatus;
 import com.example.demo1.model.Flight;
 import com.example.demo1.model.Ticket;
 import com.example.demo1.model.UserProfile;
@@ -12,6 +13,7 @@ import java.util.Random;
 
 import static com.example.demo1.constants.CommonConstants.USER;
 import static com.example.demo1.constants.MessageConstants.CONFIRM;
+import static com.example.demo1.constants.MessageConstants.PENDING;
 
 @Component
 public class Mapper {
@@ -43,7 +45,7 @@ public class Mapper {
                 .seat(new Random().nextLong(1, 150))
                 .source(flight.getRoute().getSource())
                 .destination(flight.getRoute().getDestination())
-                .status(CONFIRM)
+                .bookingStatus(BookingStatus.PENDING)
                 .flight(flight)
                 .userProfile(user)
                 .build();

@@ -16,7 +16,7 @@ public class FlightAssembler implements RepresentationModelAssembler<Flight, Ent
     @Override
     public EntityModel<Flight> toModel(Flight flight) {
         return EntityModel.of(flight,
-                linkTo(methodOn(FlightController.class).getFlightById(flight.getId())).withSelfRel(),
+                linkTo(methodOn(FlightController.class).getFlightById(flight.getId(), null)).withSelfRel(),
                 linkTo(methodOn(FlightController.class)
                         .getAllFlights(null, null, null, 0, 10, ID, ASC))
                         .withRel(ALLFLIGHTS).expand());

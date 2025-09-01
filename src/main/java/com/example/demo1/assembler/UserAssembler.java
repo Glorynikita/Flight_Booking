@@ -17,7 +17,7 @@ public class UserAssembler implements RepresentationModelAssembler<UserResponseD
     @Override
     public EntityModel<UserResponseDto> toModel(UserResponseDto dto) {
         return EntityModel.of(dto,
-                linkTo(methodOn(UserProfileController.class).getUserById(dto.getUserId())).withSelfRel(),
+                linkTo(methodOn(UserProfileController.class).getUserById(dto.getUserId(), null)).withSelfRel(),
                 linkTo(UserProfileController.class).slash(USERS).withRel(ALLUSER),
                 linkTo(UserProfileController.class).slash(ADD).withRel(ADDUSER).withType(POST),
                 linkTo(UserProfileController.class).slash(UPDATE).withRel(UPUSER).withType(PUT),

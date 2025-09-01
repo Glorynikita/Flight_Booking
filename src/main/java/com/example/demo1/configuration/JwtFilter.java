@@ -17,7 +17,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.example.demo1.constants.MessageConstants.*;
+import static com.example.demo1.constants.MessageConstants.INVALID_TOKEN;
+import static com.example.demo1.constants.MessageConstants.TOKEN_EXPIRED;
 
 @Component
 @RequiredArgsConstructor

@@ -9,6 +9,7 @@ import com.example.demo1.mapper.Mapper;
 import com.example.demo1.model.SeatClass;
 import com.example.demo1.model.UserProfile;
 import com.example.demo1.repository.UserProfileRepo;
+import com.example.demo1.translator.Translator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,11 +21,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import static com.example.demo1.constants.CommonConstants.ASC;
 import static com.example.demo1.constants.CommonConstants.LIKE;
-import static com.example.demo1.constants.MessageConstants.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class UserProfileService {
     private final UserProfileRepo userProfileRepo;
     private final Mapper mapper;
     private final BCryptPasswordEncoder PasswordEncoder;
+    private final Translator translator;
 
     public Page<UserResponseDto> getUsers(String filter, int page, int size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(ASC) ?
@@ -65,25 +67,24 @@ public class UserProfileService {
     }*/
 
 
-    public UserResponseDto getUserById(Long id) {
-
+    public UserResponseDto getUserById(Long id, Locale locale) {
         return UserAssembler.toUserDto(userProfileRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException(NOTFOUND)));
+                .orElseThrow(() -> new RuntimeException(translator.toLocale("user.not.found", locale))));
     }
 
-    public UserResponseDto addUser(UserRequestDto dto) {
+    public UserResponseDto addUser(UserRequestDto dto, Locale locale) {
         Optional<UserProfile> existing = userProfileRepo.findByEmailAndPhone(dto.getEmail(), dto.getPhone());
         if (existing.isPresent()) {
-            throw new DuplicateUserException(FOUND);
+            throw new DuplicateUserException(translator.toLocale("user.found", locale));
         }
         UserProfile userEntity = mapper.toUserEntity(dto);
         userEntity.setPassword(PasswordEncoder.encode(dto.getPassword()));
         return UserAssembler.toUserDto(userProfileRepo.save(userEntity));
     }
 
-    public UserResponseDto updateUser(Long id, UserRequestDto dto) {
+    public UserResponseDto updateUser(Long id, UserRequestDto dto, Locale locale) {
         UserProfile user = userProfileRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException(NOTFOUND));
+                .orElseThrow(() -> new RuntimeException(translator.toLocale("user.not.found", locale)));
         user.setName(dto.getName());
         user.setGender(dto.getGender());
         user.setEmail(dto.getEmail());
@@ -91,19 +92,19 @@ public class UserProfileService {
         return UserAssembler.toUserDto(userProfileRepo.save(user));
     }
 
-    public String deleteUser(Long id) {
+    public String deleteUser(Long id, Locale locale) {
         if(!userProfileRepo.existsById(id)) {
-            throw new UserNotFoundException(NOTFOUND);
+            throw new UserNotFoundException(translator.toLocale("user.not.found", locale));
         }
         else {
             userProfileRepo.deleteById(id);
-            return DELETED;
+            return translator.toLocale("deleted", locale);
         }
     }
 
-    public UserResponseDto getUserByTicketId(Long ticketId) {
+    public UserResponseDto getUserByTicketId(Long ticketId, Locale locale) {
         UserProfile user = userProfileRepo.findUserProfileByTicketId(ticketId)
-                .orElseThrow(() -> new RuntimeException(NO_USER));
+                .orElseThrow(() -> new RuntimeException(translator.toLocale("user.not.found", locale)));
         return UserAssembler.toUserDto(user);
     }
 
